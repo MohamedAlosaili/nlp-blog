@@ -1,14 +1,17 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-     
+import {siteConfig }  from "../data/site-config"
+
  const articles = (await getCollection("articles")).sort(
 	(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
 );
 
+
+
 ---
 
-<Layout title="News">
+<Layout title={`${siteConfig.title} | المدونات`}>
     <main class="flex flex-col gap-8 mt-8">
         
         <a href="/news" class="relative z-10 flex items-center gap-2 font-semibold w-20">
