@@ -1,8 +1,8 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "../layouts/Layout.astro";
+import Layout from "../../layouts/Layout.astro";
      
- const articles = (await getCollection("articles")).sort(
+ const newsPosts = (await getCollection("news")).sort(
 	(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
 );
 
@@ -10,26 +10,24 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="News">
     <main class="flex flex-col gap-8 mt-8">
-        
-        <a href="/news" class="relative z-10 flex items-center gap-2 font-semibold w-20">
+        <a href="/" class="relative z-10 flex items-center gap-2 font-semibold w-20">
             <svg fill="currentColor" height="16px" width="16px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="XMLID_222_" d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001 c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213 C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606 C255,161.018,253.42,157.202,250.606,154.389z"></path> </g></svg>   
-                    <span transition:name="news">الأخبار </span>
-                </a>
-            <h1 class="flex-1 text-4xl font-bold text-center"> 
+            <span transition:name="articles">المدونات </span>
+        </a>
+            <h1 class="flex-1 text-4xl font-bold text-center "> 
+                <span transition:name="news">الأخبار</span>
                 
-                   <span transition:name="articles"> المدونات
-                </span>
             </h1>
         <ul>
-    {articles.map((article) => (
+    {newsPosts.map((news) => (
         <li class="pb-4 border-b last:border-b-0 mb-4 border-gray-300">
-            <div class="flex flex-col sm:flex-row relative items-center gap-4 transition-transform group rounded-xl">
-                <a href={`/articles/${article.slug}`} class="absolute z-10 inset-0"></a>
-                <img src={article.data.heroImage} alt={article.data.title} class="max-full w-full sm:w-56 rounded-xl" transition:name={article.data.heroImage} />
+            <div class="flex flex-col sm:flex-row relative items-center gap-4 group transition-transform rounded-xl">
+                <a href={`/news/${news.slug}`} class="absolute z-10 inset-0"></a>
+                <img src={news.data.heroImage} alt={news.data.title} class="max-full w-full sm:w-56 rounded-xl" />
             <div class="flex flex-col gap-2">
-                <h3 class="text-xl font-bold sm:text-2xl transition-all group-hover:underline">{article.data.title}</h3>
-                <span>{article.data.pubDate.toLocaleDateString("ar-SA", { year: "numeric", month: "long", })}</span>
-                <p>{article.data.summary}</p>
+                <h3 class="text-xl font-bold sm:text-2xl transition-all group-hover:underline" transition:name={news.data.title}>{news.data.title}</h3>
+                <span>{news.data.pubDate.toLocaleDateString("ar-SA", { year: "numeric", month: "long", })}</span>
+                <p>{news.data.summary}</p>
             </div></div>
         </li>
     ))}

@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import HeadBase from '../components/HeadBase.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { siteConfig } from "../data/site-config.ts"
+import Subscription from '../components/Subscription.astro';
+
+type Props = CollectionEntry<"news" | "articles">['data'] & { page: "news" | "articles" };
+
+const defaultTitle = siteConfig.title;
+const { title, summary, pubDate, heroImage, page } = Astro.props;
+---
+
+<html lang="ar" dir="rtl" class="antialiased">
+	<head>
+		<HeadBase title={`${defaultTitle} | ${title}`} description={summary} />
+        <style is:global> @import url('../styles/global.css'); </style>
+	</head>
+
+	<body class="bg-main text-main min-h-screen max-w-3xl mx-auto flex flex-col px-4">
+		<Header />
+		<main>
+			<article class="py-12">
+                <a href={`/${page === "news" ? "news" : ""}`} class="mb-8 block">
+                    <svg fill="currentColor" height="16px" width="16px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="XMLID_222_" d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001 c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213 C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606 C255,161.018,253.42,157.202,250.606,154.389z"></path> </g></svg>   
+
+                </a>
+                <div class="title">
+                    <h1 class="font-bold text-xl sm:text-2xl mb-4" transition:name={title}>{title}</h1>
+						<div class="date">
+							نشر بتاريخ: <FormattedDate date={pubDate} />
+							<!-- {
+								updatedDate && (
+									<div class="last-updated-on">
+										Last updated on <FormattedDate date={updatedDate} />
+									</div>
+								)
+							} -->
+						</div>
+						<hr class="my-4"/>
+					</div>
+				<div class="hero-image">
+					{heroImage && <img width={1020} height={510} src={heroImage} alt={title} class="w-full rounded-xl" transition:name={heroImage}/>}
+				</div>
+				<div class="prose">
+					<div data-content class="markdown">
+                        <slot />
+                    </div>
+				</div>
+			</article>
+		</main>
+        <Subscription />
+		<Footer />
+	</body>
+</html>

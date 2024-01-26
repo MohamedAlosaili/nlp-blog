@@ -1,0 +1,17 @@
+---
+
+---
+<header class="flex flex-col items-center gap-8 py-3 border-b border-main/25">
+    <div class="w-full flex items-center gap-2 justify-between flex-1">
+        <div class="font-smibold text-xl"><a href="/">مدونة معالجة اللغات الطبيعية</a></div>
+        <button id="theme-toggler" class="h-4 w-4 shrink-0 rounded-full bg-black dark:bg-white"/>
+    </div>
+</header>
+<script>
+    const toggler = document.getElementById("theme-toggler");
+
+    toggler?.addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark");
+    });
+
+</script>
