@@ -15,7 +15,7 @@ export const resetPasswordAction = ({
   asyncHandler(async () => {
     let email: string;
     try {
-      email = verifyToken<{ email: string }>(token).email;
+      email = verifyToken<{ email: string }>({ token }).email;
     } catch (error) {
       return { errorCode: "invalid_reset_password_token" };
     }

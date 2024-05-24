@@ -8,6 +8,7 @@ export const asyncHandler = async <T>(
 
     return result;
   } catch (error) {
+    console.log(error);
     return { errorCode: "internal_server_error" };
   }
 };

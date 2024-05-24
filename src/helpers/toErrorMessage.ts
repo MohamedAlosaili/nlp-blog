@@ -13,6 +13,8 @@ const errorMessages: Record<ErrorCode, string> = {
   invalid_credentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة",
   invalid_reset_password_token: "رمز إعادة تعيين كلمة المرور غير صالح",
   passwords_not_match: "كلمات المرور غير متطابقة",
+  invalid_file_type: "نوع الملف غير صالح",
+  invalid_file_size: "حجم الملف كبير جدًا",
 };
 
 export const toErrorMessage = ({ errorCode }: { errorCode: ErrorCode }) => {

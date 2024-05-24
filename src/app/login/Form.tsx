@@ -6,7 +6,7 @@ import { isUserExistsAction, loginAction, signupAction } from "./actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BsChevronRight } from "@/components/icons/reactIcons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import constants from "@/constants/client";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import Link from "next/link";
@@ -135,6 +135,7 @@ const useFormEmail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ErrorCode>();
   const [formType, setFormType] = useState<FormType>();
+  const searchParams = useSearchParams();
 
   const updateFormType = (type?: FormType) => {
     setFormType(type);
@@ -191,7 +192,9 @@ const useFormEmail = () => {
         return;
       }
 
-      router.replace(constants.redirectAfterLoginPath);
+      router.replace(
+        searchParams.get("returnUrl") || constants.redirectAfterLoginPath
+      );
     } catch (error) {
       setLoading(false);
       setError("internal_server_error");
@@ -210,7 +213,9 @@ const useFormEmail = () => {
         return;
       }
 
-      router.replace(constants.redirectAfterLoginPath);
+      router.replace(
+        searchParams.get("returnUrl") || constants.redirectAfterLoginPath
+      );
     } catch (error) {
       setLoading(false);
       setError("internal_server_error");

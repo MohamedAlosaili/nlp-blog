@@ -5,7 +5,9 @@ import {
   IUser,
   RepoMutationReturn,
   UpdatePasswordData,
+  UpdatePhotoData,
   UpdateResetPasswordTokenData,
+  UpdateUserInfoData,
 } from "@/types";
 
 /*
@@ -41,8 +43,6 @@ export const createUser = async ({ name, email, password }: CreateUserData) => {
     args: [name, email, password],
   });
 
-  console.log("#### lastInsertRowid", lastInsertRowid, "####");
-
   return lastInsertRowid?.toString() ?? "";
 };
 
@@ -65,6 +65,50 @@ export const updateUserPassword = async ({
   const { rowsAffected } = await client.execute({
     sql: "UPDATE users SET password = ? WHERE id = ?",
     args: [password, userId],
+  });
+
+  return { success: rowsAffected > 0 };
+};
+
+export const updateUserInfo = async ({
+  userId,
+  name,
+  phone,
+}: UpdateUserInfoData) => {
+  if (!name && !phone) {
+    return { success: true };
+  }
+
+  if (name && phone) {
+    const { rowsAffected } = await client.execute({
+      sql: "UPDATE users SET name = ?, phone = ? WHERE id = ?",
+      args: [name, phone, userId],
+    });
+
+    return { success: rowsAffected > 0 };
+  } else if (name) {
+    const { rowsAffected } = await client.execute({
+      sql: "UPDATE users SET name = ? WHERE id = ?",
+      args: [name, userId],
+    });
+
+    return { success: rowsAffected > 0 };
+  } else if (phone) {
+    const { rowsAffected } = await client.execute({
+      sql: "UPDATE users SET phone = ? WHERE id = ?",
+      args: [phone, userId],
+    });
+
+    return { success: rowsAffected > 0 };
+  }
+
+  return { success: false };
+};
+
+export const updatePhoto = async ({ userId, photo }: UpdatePhotoData) => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE users SET photo = ? WHERE id = ?",
+    args: [photo, userId],
   });
 
   return { success: rowsAffected > 0 };

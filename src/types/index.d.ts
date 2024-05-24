@@ -16,6 +16,12 @@ export interface SignupData {
   password: string;
 }
 
+export interface EditProfileData {
+  name: string;
+  photo?: File;
+  phone?: string;
+}
+
 export type ErrorCode =
   | "internal_server_error"
   | "invalid_credentials"
@@ -28,6 +34,8 @@ export type ErrorCode =
   | "email_required"
   | "password_required"
   | "passwords_not_match"
+  | "invalid_file_type"
+  | "invalid_file_size"
   | "invalid_reset_password_token";
 
 export type CookieName = "session";

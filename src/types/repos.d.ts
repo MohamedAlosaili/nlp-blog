@@ -16,6 +16,9 @@ export interface IUser {
   isDeleted: boolean;
 }
 
+export interface ICurrentUser
+  extends Omit<IUser, "password" | "resetPasswordToken"> {}
+
 export interface CreateUserData {
   name: string;
   email: string;
@@ -34,4 +37,15 @@ export interface RepoMutationReturn {
 export interface UpdatePasswordData {
   userId: number;
   password: string;
+}
+
+export interface UpdateUserInfoData {
+  userId: number;
+  name?: string;
+  phone?: string;
+}
+
+export interface UpdatePhotoData {
+  userId: number;
+  photo: string;
 }
