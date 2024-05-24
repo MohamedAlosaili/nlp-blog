@@ -1,3 +1,5 @@
+export * from "./repos";
+
 export interface ActionReturn<T = any> {
   errorCode?: ErrorCode;
   data?: T;
@@ -20,6 +22,9 @@ export type ErrorCode =
   | "duplicate_email"
   | "invalid_email"
   | "invalid_name"
-  | "invalid_password";
+  | "invalid_password"
+  | "name_required"
+  | "email_required"
+  | "password_required";
 
 export type CookieName = "session";
