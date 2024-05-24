@@ -1,5 +1,12 @@
 import { client } from "@/lib/db";
-import { CreateUserData, GetUserData, IUser } from "@/types";
+import {
+  CreateUserData,
+  GetUserData,
+  IUser,
+  RepoMutationReturn,
+  UpdatePasswordData,
+  UpdateResetPasswordTokenData,
+} from "@/types";
 
 /*
     🔴 Validation should happen before call these functions
@@ -37,4 +44,28 @@ export const createUser = async ({ name, email, password }: CreateUserData) => {
   console.log("#### lastInsertRowid", lastInsertRowid, "####");
 
   return lastInsertRowid?.toString() ?? "";
+};
+
+export const updateResetPasswordToken = async ({
+  email,
+  token,
+}: UpdateResetPasswordTokenData): Promise<RepoMutationReturn> => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE users SET resetPasswordToken = ? WHERE email = ?",
+    args: [token, email],
+  });
+
+  return { success: rowsAffected > 0 };
+};
+
+export const updateUserPassword = async ({
+  userId,
+  password,
+}: UpdatePasswordData) => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE users SET password = ? WHERE id = ?",
+    args: [password, userId],
+  });
+
+  return { success: rowsAffected > 0 };
 };

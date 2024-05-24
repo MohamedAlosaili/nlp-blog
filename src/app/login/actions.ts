@@ -51,7 +51,7 @@ export const loginAction = (data: Partial<LoginData>) =>
         hashedPassword: user.password,
       }))
     ) {
-      return { errorCode: "invalid_password" };
+      return { errorCode: "wrong_password" };
     }
 
     const token = generateToken({ id: user.id });

@@ -5,11 +5,12 @@ import { useMemo, useState } from "react";
 import { isUserExistsAction, loginAction, signupAction } from "./actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toErrorMessage } from "@/helpers/toErrorMessage";
 import { BsChevronRight } from "@/components/icons/reactIcons";
 import { useRouter } from "next/navigation";
 import constants from "@/constants/client";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import Link from "next/link";
+import { ErrorMessage } from "@/components/ui/error-message";
 
 type FormType = "login" | "signup";
 
@@ -28,11 +29,7 @@ export const Form = () => {
   return (
     <>
       <h1 className="text-center text-xl font-semibold">{formText.title}</h1>
-      {error && (
-        <p className="text-red-600 text-center text-sm">
-          {toErrorMessage({ errorCode: error })}
-        </p>
-      )}
+      {error && <ErrorMessage error={error} />}
       {!!formType && (
         <button
           className="absolute top-2 right-4"
@@ -88,8 +85,15 @@ export const Form = () => {
         )}
 
         <Button disabled={loading}>
-          {true && <LoadingSpinner />} {formText.submit}
+          {loading && <LoadingSpinner />} {formText.submit}
         </Button>
+        {formType === "login" && (
+          <div className="pt-4 text-center ">
+            <Link href="/forgot-password" className="text-sm underline">
+              نسيت كلمة المرور؟{" "}
+            </Link>
+          </div>
+        )}
       </form>
     </>
   );

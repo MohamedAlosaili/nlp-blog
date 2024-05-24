@@ -21,10 +21,13 @@ export type ErrorCode =
   | "invalid_credentials"
   | "duplicate_email"
   | "invalid_email"
+  | "wrong_password"
   | "invalid_name"
   | "invalid_password"
   | "name_required"
   | "email_required"
-  | "password_required";
+  | "password_required"
+  | "passwords_not_match"
+  | "invalid_reset_password_token";
 
 export type CookieName = "session";
