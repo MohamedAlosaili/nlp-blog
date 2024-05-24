@@ -1,2 +1,2 @@
 export { BsChevronRight } from "react-icons/bs";
-export { PiSpinnerGap } from "react-icons/pi";
+export { ImSpinner3 } from "react-icons/im";

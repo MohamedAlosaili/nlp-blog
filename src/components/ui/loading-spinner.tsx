@@ -1,5 +1,5 @@
-import { PiSpinnerGap } from "@/components/icons/reactIcons";
+import { ImSpinner3 } from "@/components/icons/reactIcons";
 
 export const LoadingSpinner = () => {
-  return <PiSpinnerGap className="animate-spin" />;
+  return <ImSpinner3 className="animate-spin" />;
 };
