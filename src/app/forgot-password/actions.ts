@@ -3,6 +3,7 @@
 import { asyncHandler } from "@/helpers/asyncHandler";
 import { generateToken } from "@/lib/jwt";
 import * as usersRepo from "@/repos/users";
+import { sendResetPasswordEmail } from "@/services/sendEmail";
 
 export const forgotPasswordAction = ({ email }: { email: string }) =>
   asyncHandler(async () => {
@@ -17,7 +18,8 @@ export const forgotPasswordAction = ({ email }: { email: string }) =>
     });
 
     if (success) {
-      // send email with resetPasswordToken
+      const url = `${process.env.CLIENT_URL}?token=${resetPasswordToken}`;
+      await sendResetPasswordEmail({ email, url });
     }
 
     return {};
