@@ -1,4 +1,5 @@
 export * from "./repos";
+export * from "./posts";
 
 export interface ActionReturn<T = any> {
   errorCode?: ErrorCode;
@@ -20,6 +21,12 @@ export interface EditProfileData {
   name: string;
   photo?: File;
   phone?: string;
+}
+
+export interface APIJSONResponse<T = any> {
+  success: boolean;
+  data?: T;
+  errorCode?: ErrorCode;
 }
 
 export type ErrorCode =

@@ -17,3 +17,10 @@ CREATE TABLE users (
 CREATE INDEX users_email_index ON users(email); 
 
 ALTER TABLE users ADD COLUMN resetPasswordToken TEXT;
+
+
+CREATE TABLE tags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
