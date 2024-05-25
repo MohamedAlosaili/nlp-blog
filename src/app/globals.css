@@ -64,9 +64,7 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -78,4 +76,25 @@
     @apply py-8 px-4 max-w-3xl mx-auto flex;
     min-height: calc(100vh - 5rem);
   }
+}
+
+div.prose {
+  max-width: 100%;
+}
+
+.prose pre {
+  direction: ltr;
+}
+
+.tiptap iframe {
+  max-width: 100%;
+  width: 640px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.tiptap img,
+.tiptap iframe {
+  margin-left: auto;
+  margin-right: auto;
 }
