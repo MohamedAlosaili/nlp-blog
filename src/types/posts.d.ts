@@ -1,7 +1,7 @@
 export interface PostFormData {
   title: string;
   tags: Tag[];
-  coverImage?: File;
+  coverImage: string;
   summary: string;
   content: string;
 }
@@ -9,5 +9,4 @@ export interface PostFormData {
 export interface Tag {
   id: number;
   name: string;
-  isNew?: boolean;
 }

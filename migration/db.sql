@@ -24,3 +24,34 @@ CREATE TABLE tags (
     name TEXT NOT NULL,
     createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE drafts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    coverImage TEXT,
+    tags TEXT, -- comma separated tag ids
+    content TEXT NOT NULL,
+    userId INTEGER NOT NULL,
+    createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(id)
+);
+
+CREATE TABLE posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    coverImage TEXT,
+    content TEXT NOT NULL,
+    userId INTEGER NOT NULL,
+    createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TEXT,
+    FOREIGN KEY (userId) REFERENCES users(id)
+);
+
+CREATE TABLE postTags (
+    postId INTEGER NOT NULL,
+    tagId INTEGER NOT NULL,
+    FOREIGN KEY (postId) REFERENCES posts(id),
+    FOREIGN KEY (tagId) REFERENCES tags(id)
+);

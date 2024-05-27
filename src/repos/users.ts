@@ -3,7 +3,7 @@ import {
   CreateUserData,
   GetUserData,
   IUser,
-  RepoMutationReturn,
+  RepoReturn,
   UpdatePasswordData,
   UpdatePhotoData,
   UpdateResetPasswordTokenData,
@@ -49,60 +49,67 @@ export const createUser = async ({ name, email, password }: CreateUserData) => {
 export const updateResetPasswordToken = async ({
   email,
   token,
-}: UpdateResetPasswordTokenData): Promise<RepoMutationReturn> => {
+}: UpdateResetPasswordTokenData): Promise<RepoReturn> => {
   const { rowsAffected } = await client.execute({
     sql: "UPDATE users SET resetPasswordToken = ? WHERE email = ?",
     args: [token, email],
   });
 
-  return { success: rowsAffected > 0 };
+  return {
+    errorCode: rowsAffected === 0 ? "internal_server_error" : undefined,
+  };
 };
 
 export const updateUserPassword = async ({
   userId,
   password,
-}: UpdatePasswordData) => {
+}: UpdatePasswordData): Promise<RepoReturn> => {
   const { rowsAffected } = await client.execute({
     sql: "UPDATE users SET password = ? WHERE id = ?",
     args: [password, userId],
   });
 
-  return { success: rowsAffected > 0 };
+  return {
+    errorCode: rowsAffected === 0 ? "internal_server_error" : undefined,
+  };
 };
 
 export const updateUserInfo = async ({
   userId,
   name,
   phone,
-}: UpdateUserInfoData) => {
+}: UpdateUserInfoData): Promise<RepoReturn> => {
   if (!name && !phone) {
-    return { success: true };
+    return {};
   }
 
+  let rowsAffected = 0;
   if (name && phone) {
-    const { rowsAffected } = await client.execute({
+    const result = await client.execute({
       sql: "UPDATE users SET name = ?, phone = ? WHERE id = ?",
       args: [name, phone, userId],
     });
 
-    return { success: rowsAffected > 0 };
+    rowsAffected = result.rowsAffected;
   } else if (name) {
-    const { rowsAffected } = await client.execute({
+    const result = await client.execute({
       sql: "UPDATE users SET name = ? WHERE id = ?",
       args: [name, userId],
     });
 
-    return { success: rowsAffected > 0 };
+    rowsAffected = result.rowsAffected;
   } else if (phone) {
-    const { rowsAffected } = await client.execute({
+    const result = await client.execute({
       sql: "UPDATE users SET phone = ? WHERE id = ?",
       args: [phone, userId],
     });
 
-    return { success: rowsAffected > 0 };
+    rowsAffected = result.rowsAffected;
   }
 
-  return { success: false };
+  return {
+    errorCode: rowsAffected === 0 ? "internal_server_error" : undefined,
+  };
 };
 
 export const updatePhoto = async ({ userId, photo }: UpdatePhotoData) => {

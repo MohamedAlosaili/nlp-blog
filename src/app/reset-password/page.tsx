@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { Form } from "./Form";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const ResetPasswordPage = async () => {
   return (
@@ -7,7 +9,9 @@ const ResetPasswordPage = async () => {
         <h1 className="text-center text-xl font-semibold">
           إعادة تعيين كلمة المرور
         </h1>
-        <Form />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Form />
+        </Suspense>
       </section>
     </main>
   );

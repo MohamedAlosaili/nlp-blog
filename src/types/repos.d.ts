@@ -30,8 +30,9 @@ export interface UpdateResetPasswordTokenData {
   token: string | null;
 }
 
-export interface RepoMutationReturn {
-  success: boolean;
+export interface RepoReturn<T = any> {
+  data?: T;
+  errorCode?: ErrorCode;
 }
 
 export interface UpdatePasswordData {
@@ -48,4 +49,21 @@ export interface UpdateUserInfoData {
 export interface UpdatePhotoData {
   userId: number;
   photo: string;
+}
+
+export interface DraftData {
+  title: string;
+  summary: string;
+  coverImage: string;
+  tags: string;
+  content: string;
+  userId: number;
+}
+
+export interface NewPostData {
+  title: string;
+  summary: string;
+  coverImage: string;
+  content: string;
+  userId: number;
 }

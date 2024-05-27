@@ -2,7 +2,8 @@ import { Form } from "./Form";
 import { getCurrentUser } from "@/helpers/getCurrentUser";
 import { redirect } from "next/navigation";
 
-export const invalidate = 5 * 60;
+export const revalidate = 5 * 60;
+export const dynamic = "force-dynamic";
 
 const EditProfilePage = async () => {
   const user = await getCurrentUser();

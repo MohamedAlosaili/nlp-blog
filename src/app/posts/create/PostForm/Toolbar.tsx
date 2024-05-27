@@ -37,7 +37,7 @@ interface ToolbarProps {
 
 export const Toolbar = ({ editor }: ToolbarProps) => {
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="flex flex-wrap gap-1 p-2 border-b border-zinc-200">
       <ToolbarButton
         onClick={() =>
           editor?.chain().focus().toggleHeading({ level: 1 }).run()
@@ -137,6 +137,12 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
       <LinkPopover editor={editor} />
       <ImagePopover editor={editor} />
       <VideoPopover editor={editor} />
+      <ToolbarButton onClick={() => editor?.chain().focus().redo().run()}>
+        <Redo />
+      </ToolbarButton>
+      <ToolbarButton onClick={() => editor?.chain().focus().undo().run()}>
+        <Undo />
+      </ToolbarButton>
     </div>
   );
 };

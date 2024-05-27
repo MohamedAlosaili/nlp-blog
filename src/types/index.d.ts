@@ -43,6 +43,11 @@ export type ErrorCode =
   | "passwords_not_match"
   | "invalid_file_type"
   | "invalid_file_size"
+  | "title_required"
+  | "summary_required"
+  | "cover_image_required"
+  | "tags_required"
+  | "content_required"
   | "invalid_reset_password_token";
 
 export type CookieName = "session";

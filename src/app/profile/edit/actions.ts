@@ -3,9 +3,8 @@
 import constants from "@/constants/server";
 import { asyncHandler } from "@/helpers/asyncHandler";
 import { getIdFromToken } from "@/helpers/getIdFromToken";
-import { bucket } from "@/lib/firebase";
 import * as usersRepo from "@/repos/users";
-import { ActionReturn } from "@/types";
+import { uploadFile } from "@/services/upload";
 import { revalidatePath } from "next/cache";
 
 export const updateProfileImageAction = (formData: FormData) =>
@@ -16,33 +15,11 @@ export const updateProfileImageAction = (formData: FormData) =>
     }
 
     const photo = formData.get("photo") as File;
-    const arrayBuffer = await photo.arrayBuffer();
-
     const filename = `${userId}.png`;
+    const filepath = `${constants.profilePhotoStoragePath}/${filename}`;
 
-    const file = bucket.file(
-      `${constants.profilePhotoStoragePath}/${filename}`
-    );
     const [result, success] = await Promise.all([
-      new Promise<ActionReturn>(resolve => {
-        file.save(
-          Buffer.from(arrayBuffer),
-          {
-            gzip: true,
-            metadata: {
-              contentType: "image/png",
-            },
-          },
-          err => {
-            console.log(err);
-            if (err) {
-              resolve({ errorCode: "internal_server_error" });
-            } else {
-              resolve({});
-            }
-          }
-        );
-      }),
+      uploadFile(photo, filepath),
       usersRepo.updatePhoto({
         userId,
         photo: filename,

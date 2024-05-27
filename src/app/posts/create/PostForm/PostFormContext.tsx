@@ -8,7 +8,9 @@ export const PostFormContext = createContext<ReturnType<typeof usePostForm>>({
   loading: false,
   error: undefined,
   onChange: () => {},
-  onSubmit: async () => {},
+  onDraftSubmit: async () => {},
+  onPublishSubmit: async () => {},
+  submitType: undefined,
 });
 
 export const PostFormProvider = ({

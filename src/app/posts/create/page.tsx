@@ -1,6 +1,6 @@
 import { PostForm } from "./PostForm";
 
-export const invalidate = 0;
+export const dynamic = "force-dynamic";
 
 const CreatePost = () => {
   return (

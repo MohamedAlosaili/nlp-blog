@@ -17,13 +17,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Tag } from "@/types";
+import { ErrorCode, Tag } from "@/types";
+import { createTagAction } from "@/app/posts/create/action";
+import { LoadingSpinner } from "./loading-spinner";
 
 interface TagsComboboxProps {
   tags: Tag[];
   onSelect: (selectedId: number) => void;
   placeholder?: string;
-  addNewTag: (newTagName: string) => void;
+  addNewTag: (tag: Tag) => void;
 }
 
 export function TagsCombobox({
@@ -34,6 +36,29 @@ export function TagsCombobox({
 }: TagsComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<ErrorCode>();
+
+  const createNewTag = async () => {
+    try {
+      setError(undefined);
+      setLoading(true);
+      const { data, errorCode } = await createTagAction({ name: value });
+      setLoading(false);
+
+      if (errorCode || !data?.tag) {
+        setError(errorCode ?? "internal_server_error");
+        return;
+      }
+
+      addNewTag(data.tag);
+      setValue("");
+      setOpen(false);
+    } catch (error) {
+      setLoading(false);
+      setError("internal_server_error");
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,14 +83,9 @@ export function TagsCombobox({
             <CommandEmpty>
               <div className="flex flex-col gap-4 px-4">
                 التصنيف غير موجود
-                <Button
-                  type="button"
-                  onClick={() => {
-                    addNewTag(value);
-                    setOpen(false);
-                  }}
-                >
-                  أضف {value}
+                <Button disabled={loading} type="button" onClick={createNewTag}>
+                  {loading && <LoadingSpinner />}
+                  إضافة &lsquo;{value}&rsquo;
                 </Button>
               </div>
             </CommandEmpty>

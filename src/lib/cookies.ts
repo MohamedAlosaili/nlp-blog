@@ -26,7 +26,7 @@ interface CookieData {
 }
 
 export const setCookie = ({ name, value, options }: CookieData) => {
-  cookies().set(name, value, options);
+  cookies().set(name, value, { ...commonCookieOptions, ...options });
 };
 
 export const removeCookie = ({ name }: Pick<CookieData, "name">) => {
