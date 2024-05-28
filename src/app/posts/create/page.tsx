@@ -1,8 +1,21 @@
+import { getCurrentUser } from "@/helpers/getCurrentUser";
 import { PostForm } from "./PostForm";
+import { notFound, redirect } from "next/navigation";
+import { NotVerifiedUser } from "@/components/ui/NotVerifiedUser";
 
 export const dynamic = "force-dynamic";
 
-const CreatePost = () => {
+const CreatePost = async () => {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login?returnUrl=/posts/create");
+  }
+
+  if (user.verified === 0) {
+    return <NotVerifiedUser />;
+  }
+
   return (
     <main className="page-style">
       <section className="w-full flex flex-col gap-8">

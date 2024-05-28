@@ -13,7 +13,30 @@ export interface IUser {
   phone?: string;
   photo?: string;
   resetPasswordToken?: string;
+  isDeleted: number;
+  verified: number;
+}
+
+interface Post {
+  id: number;
+  title: string;
+  summary: string;
+  coverImage: string;
+  content: string;
+  userId: number;
   isDeleted: boolean;
+  createdAt: string;
+}
+
+export interface IPost extends Post {
+  published: boolean;
+  isDeleted: boolean;
+  updatedAt: string;
+}
+
+export interface IDraft extends Post {
+  tags: string;
+  postId: number;
 }
 
 export interface ICurrentUser

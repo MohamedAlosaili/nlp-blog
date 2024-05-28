@@ -33,8 +33,11 @@ CREATE TABLE drafts (
     tags TEXT, -- comma separated tag ids
     content TEXT NOT NULL,
     userId INTEGER NOT NULL,
+    postId INTEGER,
+    isDeleted INTEGER NOT NULL DEFAULT 0,
     createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userId) REFERENCES users(id)
+    FOREIGN KEY (postId) REFERENCES posts(id)
 );
 
 CREATE TABLE posts (
@@ -44,6 +47,8 @@ CREATE TABLE posts (
     coverImage TEXT,
     content TEXT NOT NULL,
     userId INTEGER NOT NULL,
+    isDeleted INTEGER NOT NULL DEFAULT 0,
+    isPublished INTEGER NOT NULL DEFAULT 0,
     createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt TEXT,
     FOREIGN KEY (userId) REFERENCES users(id)

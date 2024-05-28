@@ -1,5 +1,5 @@
 import { client } from "@/lib/db";
-import { DraftData, RepoReturn } from "@/types";
+import { DraftData, IDraft, RepoReturn } from "@/types";
 
 export const createNewDraft = async (data: DraftData): Promise<RepoReturn> => {
   const { lastInsertRowid } = await client.execute({
@@ -31,4 +31,36 @@ export const createNewDraft = async (data: DraftData): Promise<RepoReturn> => {
       },
     },
   };
+};
+
+export const getDrafts = async (
+  userId: number
+): Promise<RepoReturn<{ drafts: IDraft[] }>> => {
+  const { rows } = await client.execute({
+    sql: "SELECT * FROM drafts WHERE userId = ? AND isDeleted = 0",
+    args: [userId],
+  });
+
+  return {
+    data: {
+      drafts: rows as unknown as IDraft[],
+    },
+  };
+};
+
+export const deletePost = async ({
+  postId,
+}: {
+  postId: number;
+}): Promise<RepoReturn> => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE drafts SET isDeleted = 1 WHERE id = ?",
+    args: [postId],
+  });
+
+  if (rowsAffected === 0) {
+    return { errorCode: "internal_server_error" };
+  }
+
+  return {};
 };
