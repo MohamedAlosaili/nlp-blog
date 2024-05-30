@@ -29,8 +29,7 @@ interface Post {
 }
 
 export interface IPost extends Post {
-  published: boolean;
-  isDeleted: boolean;
+  isPublished: boolean;
   updatedAt: string;
 }
 

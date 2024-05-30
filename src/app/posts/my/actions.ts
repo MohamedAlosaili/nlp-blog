@@ -36,9 +36,9 @@ export const unPublishPostAction = async ({ postId }: { postId: number }) =>
     return {};
   });
 
-export const deleteDraftAction = async ({ postId }: { postId: number }) =>
+export const deleteDraftAction = async ({ draftId }: { draftId: number }) =>
   asyncHandler(async () => {
-    const { errorCode } = await draftsRepo.deletePost({ postId });
+    const { errorCode } = await draftsRepo.deleteDraft({ draftId });
 
     if (errorCode) {
       return { errorCode };

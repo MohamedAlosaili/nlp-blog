@@ -60,3 +60,5 @@ CREATE TABLE postTags (
     FOREIGN KEY (postId) REFERENCES posts(id),
     FOREIGN KEY (tagId) REFERENCES tags(id)
 );
+
+SELECT id, name FROM tags t, postTags pt WHERE t.id = pt.tagId AND pt.postId = 1;

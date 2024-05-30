@@ -45,14 +45,14 @@ export const updateUserInfoAction = (data: { name?: string; phone?: string }) =>
 
     const nameTr = name?.trim();
     const phoneTr = phone?.trim();
-    const { success } = await usersRepo.updateUserInfo({
+    const { errorCode } = await usersRepo.updateUserInfo({
       userId,
       name: nameTr,
       phone: phoneTr,
     });
 
-    if (!success) {
-      return { errorCode: "internal_server_error" };
+    if (!errorCode) {
+      return { errorCode: errorCode ?? "internal_server_error" };
     }
 
     revalidatePath("/profile/edit");

@@ -48,6 +48,7 @@ export type ErrorCode =
   | "cover_image_required"
   | "tags_required"
   | "content_required"
-  | "invalid_reset_password_token";
+  | "invalid_reset_password_token"
+  | "post_not_found";
 
 export type CookieName = "session";

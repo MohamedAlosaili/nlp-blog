@@ -1,5 +1,5 @@
 import { client } from "@/lib/db";
-import { IPost, NewPostData, RepoReturn } from "@/types";
+import { EditPostData, IPost, NewPostData, RepoReturn } from "@/types";
 
 export const createNewPost = async (data: NewPostData): Promise<RepoReturn> => {
   const { lastInsertRowid } = await client.execute({
@@ -31,7 +31,7 @@ export const createNewPost = async (data: NewPostData): Promise<RepoReturn> => {
   };
 };
 
-export const getPublishedPosts = async (
+export const getUserPublishedPosts = async (
   userId: number
 ): Promise<RepoReturn<{ posts: IPost[] }>> => {
   const { rows } = await client.execute({
@@ -46,7 +46,7 @@ export const getPublishedPosts = async (
   };
 };
 
-export const getUnPublishedPosts = async (
+export const getUserUnPublishedPosts = async (
   userId: number
 ): Promise<RepoReturn<{ posts: IPost[] }>> => {
   const { rows } = await client.execute({
@@ -86,6 +86,46 @@ export const unPublishPost = async ({
   const { rowsAffected } = await client.execute({
     sql: "UPDATE posts SET isPublished = 0 WHERE id = ?",
     args: [postId],
+  });
+
+  if (rowsAffected === 0) {
+    return { errorCode: "internal_server_error" };
+  }
+
+  return {};
+};
+
+export const getPost = async ({
+  postId,
+}: {
+  postId: number;
+}): Promise<RepoReturn<{ post: IPost }>> => {
+  const { rows } = await client.execute({
+    sql: "SELECT * FROM posts WHERE id = ? AND isDeleted = 0",
+    args: [postId],
+  });
+
+  if (rows.length === 0) {
+    return { errorCode: "post_not_found" };
+  }
+
+  return {
+    data: { post: rows[0] as unknown as IPost },
+  };
+};
+
+export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE posts SET title = ?, summary = ?, coverImage = ?, content = ?, isPublished = ?, updatedAt = ? WHERE id = ?",
+    args: [
+      data.title,
+      data.summary,
+      data.coverImage,
+      data.content,
+      data.isPublished ? 1 : 0,
+      new Date(),
+      data.id,
+    ],
   });
 
   if (rowsAffected === 0) {

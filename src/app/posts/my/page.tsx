@@ -74,7 +74,7 @@ const MyPosts = async () => {
 };
 
 const PublishedPosts = async ({ userId }: { userId: number }) => {
-  const { data } = await postsRepo.getPublishedPosts(userId);
+  const { data } = await postsRepo.getUserPublishedPosts(userId);
 
   if (!data) {
     return <ErrorMessage error="internal_server_error" />;
@@ -106,7 +106,7 @@ const PublishedPosts = async ({ userId }: { userId: number }) => {
 };
 
 const UnPublishedPosts = async ({ userId }: { userId: number }) => {
-  const { data } = await postsRepo.getUnPublishedPosts(userId);
+  const { data } = await postsRepo.getUserUnPublishedPosts(userId);
 
   if (!data) {
     return <ErrorMessage error="internal_server_error" />;
@@ -137,7 +137,7 @@ const UnPublishedPosts = async ({ userId }: { userId: number }) => {
 };
 
 const DraftPosts = async ({ userId }: { userId: number }) => {
-  const { data } = await draftsRepo.getDrafts(userId);
+  const { data } = await draftsRepo.getUserDrafts(userId);
 
   if (!data) {
     return <ErrorMessage error="internal_server_error" />;

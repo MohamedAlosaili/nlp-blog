@@ -1,6 +1,6 @@
 import { getCurrentUser } from "@/helpers/getCurrentUser";
-import { PostForm } from "./PostForm";
-import { notFound, redirect } from "next/navigation";
+import { PostForm } from "@/components/forms/PostForm";
+import { redirect } from "next/navigation";
 import { NotVerifiedUser } from "@/components/ui/NotVerifiedUser";
 
 export const dynamic = "force-dynamic";
