@@ -14,6 +14,7 @@ import { DeletePostButton } from "./buttons";
 import { IDraft, IPost } from "@/types";
 import { formatDate } from "@/utils/formatDate";
 import { Metadata } from "next";
+import { Menu } from "@/components/layout/menu";
 
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
@@ -35,6 +36,7 @@ const MyPosts = async () => {
 
   return (
     <main className="page-style">
+      <Menu />
       <div className="w-full">
         <div className="mb-20 space-y-8">
           <h1 className="text-center text-2xl font-bold">مقالاتي</h1>

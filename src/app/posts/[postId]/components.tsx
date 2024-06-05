@@ -98,7 +98,7 @@ export const SharePost = () => {
   };
 
   return (
-    <div className="flex justify-center sm:justify-end">
+    <div className="flex justify-center">
       <Button onClick={share} className="flex items-center gap-2">
         <Share className="text-base" size={16} />
         مشاركة

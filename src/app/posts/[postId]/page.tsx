@@ -64,20 +64,22 @@ const Post = async ({ params }: PostProps) => {
   }
 
   return (
-    <main className="page-style">
+    <main className="page-style flex-col">
       <div>
         <div className="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl ">
           <h1>{post.title}</h1>
           <div>
-            <div className="flex items-center gap-1">
-              <time>{formatDate(post.createdAt)}</time>
-              {post.updatedAt && (
-                <p>
-                  - آخر تحديث: <time>{formatDate(post.updatedAt)}</time>
-                </p>
-              )}
+            <div className="flex flex-col sm:flex-row gap-4 items-center gap-4 justify-between">
+              <div className="flex items-center justify-center sm:justify-start gap-1">
+                <time>{formatDate(post.createdAt)}</time>
+                {post.updatedAt && (
+                  <p>
+                    - آخر تحديث: <time>{formatDate(post.updatedAt)}</time>
+                  </p>
+                )}
+              </div>
+              <SharePost />
             </div>
-            <SharePost />
           </div>
           <p>{post.summary}</p>
           <Image

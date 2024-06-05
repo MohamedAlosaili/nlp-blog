@@ -3,13 +3,13 @@ import { useState } from "react";
 import {
   publishPostAction,
   saveDraftPostAction,
-} from "../../../app/posts/create/action";
+} from "@/app/posts/create/action";
 import { useParams, useRouter } from "next/navigation";
 import constants from "@/constants/client";
 import {
   editDraftAction,
   editPostAction,
-} from "@/app/edit/[type]/[postId]/actions";
+} from "@/app/(dynamic)/edit/[type]/[postId]/actions";
 import { deleteDraftAction } from "@/app/posts/my/actions";
 
 interface UsePostFormProps {
