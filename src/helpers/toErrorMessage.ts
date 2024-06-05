@@ -15,6 +15,14 @@ const errorMessages: Record<ErrorCode, string> = {
   passwords_not_match: "كلمات المرور غير متطابقة",
   invalid_file_type: "نوع الملف غير صالح",
   invalid_file_size: "حجم الملف كبير جدًا",
+  content_required: "المحتوى مطلوب",
+  content_too_long: "المحتوى طويل جدًا",
+  title_required: "العنوان مطلوب",
+  summary_required: "الملخص مطلوب",
+  cover_image_required: "صورة الغلاف مطلوبة",
+  tags_required: "التصنيفات مطلوبة",
+  post_not_found: "المقالة غير موجودة",
+  sender_name_required: "الاسم مطلوب",
 };
 
 export const toErrorMessage = ({ errorCode }: { errorCode: ErrorCode }) => {

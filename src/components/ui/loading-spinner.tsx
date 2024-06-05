@@ -5,7 +5,10 @@ export const LoadingSpinner = (props: React.ComponentProps<"svg">) => {
   return (
     <ImSpinner3
       {...props}
-      className={cn("animate-spin ml-2", props.className)}
+      className={cn(
+        "animate-[spin_0.5s_linear_infinite]  ml-2",
+        props.className
+      )}
     />
   );
 };

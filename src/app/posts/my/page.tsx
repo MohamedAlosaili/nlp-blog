@@ -10,10 +10,17 @@ import { Edit, Feather } from "lucide-react";
 import Image from "next/image";
 import { getPostImage } from "@/utils/images";
 import { NotVerifiedUser } from "@/components/ui/NotVerifiedUser";
-import { DeletePostButton, UnPublishPostButton } from "./buttons";
+import { DeletePostButton } from "./buttons";
 import { IDraft, IPost } from "@/types";
+import { formatDate } from "@/utils/formatDate";
+import { Metadata } from "next";
 
 export const revalidate = 0;
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "مدوناتي",
+};
 
 const MyPosts = async () => {
   const user = await getCurrentUser();
@@ -28,11 +35,13 @@ const MyPosts = async () => {
 
   return (
     <main className="page-style">
-      <div className="space-y-8 w-full">
-        <h1 className="text-center text-2xl font-bold">مقالاتي</h1>
-        <StickyNav />
-        <section className="min-h-60">
-          <h2 id="published" className="text-xl font-bold mb-4">
+      <div className="w-full">
+        <div className="mb-20 space-y-8">
+          <h1 className="text-center text-2xl font-bold">مقالاتي</h1>
+          <StickyNav />
+        </div>
+        <section className="min-h-96">
+          <h2 id="published" className="text-xl font-bold my-12 text-center">
             مقالات منشورة
           </h2>
           <Suspense fallback={<div>تحميل...</div>}>
@@ -40,8 +49,8 @@ const MyPosts = async () => {
           </Suspense>
         </section>
 
-        <section className="min-h-60">
-          <h2 id="unpublished" className="text-xl font-bold mb-4">
+        <section className="min-h-96">
+          <h2 id="unpublished" className="text-xl font-bold my-12 text-center">
             مقالات غير منشورة
           </h2>
           <Suspense fallback={<div>تحميل...</div>}>
@@ -49,8 +58,8 @@ const MyPosts = async () => {
           </Suspense>
         </section>
 
-        <section className="min-h-60">
-          <h2 id="drafts" className="text-xl font-bold mb-4">
+        <section className="min-h-96">
+          <h2 id="drafts" className="text-xl font-bold my-12 text-center">
             مقالات مسودة
           </h2>
           <Suspense fallback={<div>تحميل...</div>}>
@@ -85,17 +94,17 @@ const PublishedPosts = async ({ userId }: { userId: number }) => {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div>
       {data.posts.map(post => (
         <Card
           key={post.id}
+          type="published"
           post={post}
           buttons={
             <>
               <Link href={`/edit/posts/${post.id}`}>
                 <Edit />
               </Link>
-              <UnPublishPostButton postId={post.id} />
               <DeletePostButton postId={post.id} postType="post" />
             </>
           }
@@ -117,7 +126,7 @@ const UnPublishedPosts = async ({ userId }: { userId: number }) => {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div>
       {data.posts.map(post => (
         <Card
           key={post.id}
@@ -148,7 +157,7 @@ const DraftPosts = async ({ userId }: { userId: number }) => {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div>
       {data.drafts.map(post => (
         <Card
           key={post.id}
@@ -169,29 +178,43 @@ const DraftPosts = async ({ userId }: { userId: number }) => {
 
 interface CardProps {
   post: IDraft | IPost;
+  type?: "draft" | "unpublished" | "published";
   buttons?: React.ReactNode;
 }
 
-const Card = ({ post, buttons }: CardProps) => (
-  <div key={post.id} className="flex items-center gap-4">
-    <Image
-      src={getPostImage(post.coverImage)}
-      alt={post.title}
-      width={208}
-      height={112}
-      className="shrink-0 w-52 h-28 rounded-md object-cover"
-    />
-    <div className="h-full flex flex-col gap-1">
-      <h3 className="text-lg font-semibold">{post.title}</h3>
-      <p className="text-sm">{post.summary}</p>
-      <p className="text-sm mt-4">
-        {new Date(post.createdAt).toLocaleString("ar", {
-          dateStyle: "long",
-          numberingSystem: "mathsans",
-        })}
-      </p>
+const Card = ({ post, type, buttons }: CardProps) => (
+  <div
+    key={post.id}
+    className="flex flex-col sm:flex-row items-center gap-4 border-b-2 border-zinc-300 pb-8 mb-8"
+  >
+    <Link href={type === "published" ? `/posts/${post.id}` : "#"}>
+      <Image
+        src={getPostImage(post.coverImage)}
+        alt={post.title}
+        width={208}
+        height={112}
+        className="shrink-0 sm:w-52 sm:h-28 w-full aspect-video  rounded-md object-cover"
+      />
+    </Link>
+    <div className="w-full flex-1 flex flex-col-reverse sm:flex-row gap-4">
+      <div className="flex-1 flex flex-col gap-1">
+        <h3 className="text-lg font-semibold">
+          <Link href={type === "published" ? `/posts/${post.id}` : "#"}>
+            {post.title}
+          </Link>
+        </h3>
+        <p className="text-sm">{post.summary}</p>
+        <p className="text-sm mt-4">
+          {formatDate(post.createdAt)}{" "}
+          {"updatedAt" in post && post.updatedAt
+            ? `- تم التحديث بتاريخ ${formatDate(post.updatedAt)}`
+            : ""}
+        </p>
+      </div>
+      <div className="flex sm:flex-col gap-2 flex items-center justify-center gap-4">
+        {buttons}
+      </div>
     </div>
-    <div className="flex flex-col gap-2">{buttons}</div>
   </div>
 );
 

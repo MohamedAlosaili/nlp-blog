@@ -12,12 +12,12 @@ export const forgotPasswordAction = ({ email }: { email: string }) =>
 
     const resetPasswordToken = generateToken({ email }, { expiresIn: "1h" });
 
-    const { success } = await usersRepo.updateResetPasswordToken({
+    const { errorCode } = await usersRepo.updateResetPasswordToken({
       email,
       token: resetPasswordToken,
     });
 
-    if (success) {
+    if (!errorCode) {
       const url = `${process.env.CLIENT_URL}?token=${resetPasswordToken}`;
       await sendResetPasswordEmail({ email, url });
     }

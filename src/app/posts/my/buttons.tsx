@@ -36,7 +36,7 @@ export const DeletePostButton = ({
     try {
       setLoading(true);
       if (postType === "draft") {
-        await deleteDraftAction({ postId });
+        await deleteDraftAction({ draftId: postId });
       } else {
         await deletePostAction({ postId });
       }
@@ -49,8 +49,15 @@ export const DeletePostButton = ({
 
   return (
     <AlertDialog open={open}>
-      <AlertDialogTrigger asChild onClick={() => setOpen(true)}>
-        <Trash />
+      <AlertDialogTrigger
+        asChild
+        onClick={e => {
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen(true);
+        }}
+      >
+        <Trash className="cursor-pointer" />
       </AlertDialogTrigger>
       <AlertDialogContent className="max-w-80">
         <AlertDialogHeader>

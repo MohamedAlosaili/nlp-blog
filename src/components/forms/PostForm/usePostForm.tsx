@@ -65,13 +65,13 @@ export const usePostForm = ({
       } else {
         errorCode = (await saveDraftPostAction({ formData })).errorCode;
       }
+      setLoading(false);
 
       if (errorCode) {
         setError(errorCode);
         return;
       }
 
-      setLoading(false);
       router.push("/posts/my");
     } catch (error) {
       setLoading(false);
@@ -106,14 +106,18 @@ export const usePostForm = ({
         postId = result.data.post.id;
       }
 
+      setLoading(false);
+
       if (errorCode) {
         setError(errorCode);
         return;
       }
 
-      setLoading(false);
-
-      router.push(`/posts/${postId}`);
+      if (typeof formData.isPublished === "boolean" && !formData.isPublished) {
+        router.push(`/posts/my`);
+      } else {
+        router.push(`/posts/${postId}`);
+      }
     } catch (error) {
       setLoading(false);
       setError("internal_server_error");

@@ -31,6 +31,19 @@ export const createNewPost = async (data: NewPostData): Promise<RepoReturn> => {
   };
 };
 
+export const getPublishedPosts = async (): Promise<
+  RepoReturn<{ posts: IPost[] }>
+> => {
+  const { rows } = await client.execute(
+    "SELECT * FROM posts WHERE isPublished = 1 AND isDeleted = 0"
+  );
+
+  return {
+    data: {
+      posts: rows as unknown as IPost[],
+    },
+  };
+};
 export const getUserPublishedPosts = async (
   userId: number
 ): Promise<RepoReturn<{ posts: IPost[] }>> => {
@@ -97,11 +110,17 @@ export const unPublishPost = async ({
 
 export const getPost = async ({
   postId,
+  onlyPublished = false,
 }: {
   postId: number;
+  onlyPublished?: boolean;
 }): Promise<RepoReturn<{ post: IPost }>> => {
+  let sql = "SELECT * FROM posts WHERE id = ? AND isDeleted = 0";
+  if (onlyPublished) {
+    sql += " AND isPublished = 1";
+  }
   const { rows } = await client.execute({
-    sql: "SELECT * FROM posts WHERE id = ? AND isDeleted = 0",
+    sql,
     args: [postId],
   });
 
@@ -116,14 +135,13 @@ export const getPost = async ({
 
 export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
   const { rowsAffected } = await client.execute({
-    sql: "UPDATE posts SET title = ?, summary = ?, coverImage = ?, content = ?, isPublished = ?, updatedAt = ? WHERE id = ?",
+    sql: "UPDATE posts SET title = ?, summary = ?, coverImage = ?, content = ?, isPublished = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?",
     args: [
       data.title,
       data.summary,
       data.coverImage,
       data.content,
       data.isPublished ? 1 : 0,
-      new Date(),
       data.id,
     ],
   });

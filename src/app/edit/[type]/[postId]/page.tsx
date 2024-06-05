@@ -12,6 +12,8 @@ interface EditPostProps {
   params: { type: "posts" | "drafts"; postId: string };
 }
 
+export const dynamic = "force-dynamic";
+
 const EditPost = async ({ params: { type, postId } }: EditPostProps) => {
   let postRequest: ReturnType<
     typeof draftsRepo.getDraft | typeof postsRepo.getPost

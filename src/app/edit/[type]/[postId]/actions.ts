@@ -5,6 +5,7 @@ import { EditDraftData, EditPostData } from "@/types";
 import * as postsRepo from "@/repos/posts";
 import * as postTagsRepo from "@/repos/postTags";
 import * as draftsRepo from "@/repos/drafts";
+import { revalidatePath } from "next/cache";
 
 export const editPostAction = async (data: EditPostData) =>
   asyncHandler(async () => {
@@ -30,6 +31,9 @@ export const editPostAction = async (data: EditPostData) =>
     const updatePostRequest = postsRepo.editPost(data);
     await Promise.all([updatePostRequest, ...updatePostTagsRequests]);
 
+    revalidatePath("/posts/my");
+    revalidatePath(`/posts/${data.id}`);
+    revalidatePath(`/`);
     return { data: { post: data } };
   });
 
@@ -40,5 +44,6 @@ export const editDraftAction = async (data: EditDraftData) =>
     const draftData = { ...data, tags };
     await draftsRepo.editDraft(draftData);
 
+    revalidatePath("/posts/my");
     return {};
   });

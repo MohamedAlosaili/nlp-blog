@@ -5,6 +5,10 @@ import { NotVerifiedUser } from "@/components/ui/NotVerifiedUser";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "مقال جديد",
+};
+
 const CreatePost = async () => {
   const user = await getCurrentUser();
 

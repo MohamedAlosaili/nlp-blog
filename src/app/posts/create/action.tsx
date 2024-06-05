@@ -10,6 +10,7 @@ import { getIdFromToken } from "@/helpers/getIdFromToken";
 import * as draftsRepo from "@/repos/drafts";
 import * as postsRepo from "@/repos/posts";
 import * as postTasRepo from "@/repos/postTags";
+import { revalidatePath } from "next/cache";
 
 export const uploadImageAction = async ({ formData }: { formData: FormData }) =>
   asyncHandler(async () => {
@@ -61,6 +62,8 @@ export const saveDraftPostAction = ({ formData }: { formData: PostFormData }) =>
       return { errorCode };
     }
 
+    revalidatePath("/posts/my");
+
     return { data };
   });
 
@@ -93,5 +96,7 @@ export const publishPostAction = ({ formData }: { formData: PostFormData }) =>
       return { errorCode };
     }
 
+    revalidatePath("/posts/my");
+    revalidatePath(`/`);
     return { data };
   });

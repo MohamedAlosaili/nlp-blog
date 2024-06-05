@@ -31,12 +31,12 @@ export const resetPasswordAction = ({
     }
 
     const hashedPassword = await hashPassword({ password });
-    const { success } = await usersRepo.updateUserPassword({
+    const { errorCode } = await usersRepo.updateUserPassword({
       userId: user.id,
       password: hashedPassword,
     });
 
-    if (!success) {
+    if (!errorCode) {
       return { errorCode: "internal_server_error" };
     }
 

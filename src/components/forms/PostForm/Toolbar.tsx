@@ -28,6 +28,7 @@ import {
   AlignLeft,
   AlignRight,
   Quote,
+  Heading4,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -38,14 +39,6 @@ interface ToolbarProps {
 export const Toolbar = ({ editor }: ToolbarProps) => {
   return (
     <div className="flex flex-wrap gap-1 p-2 border-b border-zinc-200">
-      <ToolbarButton
-        onClick={() =>
-          editor?.chain().focus().toggleHeading({ level: 1 }).run()
-        }
-        isActive={editor?.isActive("heading", { level: 1 })}
-      >
-        <Heading1 />
-      </ToolbarButton>
       <ToolbarButton
         onClick={() =>
           editor?.chain().focus().toggleHeading({ level: 2 }).run()
@@ -61,6 +54,14 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
         isActive={editor?.isActive("heading", { level: 3 })}
       >
         <Heading3 />
+      </ToolbarButton>
+      <ToolbarButton
+        onClick={() =>
+          editor?.chain().focus().toggleHeading({ level: 4 }).run()
+        }
+        isActive={editor?.isActive("heading", { level: 4 })}
+      >
+        <Heading4 />
       </ToolbarButton>
       <ToolbarButton
         onClick={() => editor?.chain().focus().toggleBold().run()}

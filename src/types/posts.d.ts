@@ -7,6 +7,12 @@ export interface PostFormData {
   isPublished?: boolean;
 }
 
+export interface CommentFormData {
+  senderName: string;
+  content: string;
+  postId: number;
+}
+
 export interface EditPostData extends PostFormData {
   id: number;
 }

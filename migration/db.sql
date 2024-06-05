@@ -61,4 +61,16 @@ CREATE TABLE postTags (
     FOREIGN KEY (tagId) REFERENCES tags(id)
 );
 
-SELECT id, name FROM tags t, postTags pt WHERE t.id = pt.tagId AND pt.postId = 1;
+CREATE TABLE comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT NOT NULL,
+    senderName TEXT NOT NULL,
+    userId INTEGER NOT NULL,
+    postId INTEGER NOT NULL,
+    isDeleted INTEGER NOT NULL DEFAULT 0,
+    createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(id),
+    FOREIGN KEY (postId) REFERENCES posts(id)
+);
+
+CREATE NONCLUSTERED INDEX comments_postId_index ON comments(postId); 

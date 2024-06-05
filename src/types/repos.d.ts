@@ -38,6 +38,16 @@ export interface IDraft extends Post {
   postId: number;
 }
 
+export interface IComment {
+  id: number;
+  content: string;
+  senderName: string;
+  userId: number;
+  postId: number;
+  isDeleted: boolean;
+  createdAt: string;
+}
+
 export interface ICurrentUser
   extends Omit<IUser, "password" | "resetPasswordToken"> {}
 
@@ -88,4 +98,11 @@ export interface NewPostData {
   coverImage: string;
   content: string;
   userId: number;
+}
+
+export interface CommentData {
+  content: string;
+  senderName: string;
+  postId: number;
+  userId?: number;
 }
