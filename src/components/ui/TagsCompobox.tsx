@@ -81,13 +81,21 @@ export function TagsCombobox({
           />
           <CommandList>
             <CommandEmpty>
-              <div className="flex flex-col gap-4 px-4">
-                التصنيف غير موجود
-                <Button disabled={loading} type="button" onClick={createNewTag}>
-                  {loading && <LoadingSpinner />}
-                  إضافة &lsquo;{value}&rsquo;
-                </Button>
-              </div>
+              {value.trim() ? (
+                <div className="flex flex-col gap-4 px-4">
+                  التصنيف غير موجود
+                  <Button
+                    disabled={loading}
+                    type="button"
+                    onClick={createNewTag}
+                  >
+                    {loading && <LoadingSpinner />}
+                    إضافة &lsquo;{value}&rsquo;
+                  </Button>
+                </div>
+              ) : (
+                <p>لا يوجد تصنيفات</p>
+              )}
             </CommandEmpty>
             <CommandGroup>
               {tags.map(tag => (

@@ -8,7 +8,6 @@ import constants from "@/constants/client";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { TagsCombobox } from "@/components/ui/TagsCompobox";
 import { BsXCircle } from "@/components/icons/reactIcons";
-import { TextEditor } from "./TextEditor";
 import { randomId } from "@/lib/randomId";
 import {
   deleteImageAction,
@@ -20,6 +19,14 @@ import { getPostImage } from "@/utils/images";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
+import dynamic from "next/dynamic";
+
+const TextEditor = dynamic(
+  () => import("./TextEditor").then(mod => mod.TextEditor),
+  {
+    ssr: false,
+  }
+);
 
 export const PostForm = (
   props: React.ComponentProps<typeof PostFormProvider>

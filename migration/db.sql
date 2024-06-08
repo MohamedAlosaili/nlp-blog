@@ -14,11 +14,6 @@ CREATE TABLE users (
     createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX users_email_index ON users(email); 
-
-ALTER TABLE users ADD COLUMN resetPasswordToken TEXT;
-
-
 CREATE TABLE tags (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -73,4 +68,4 @@ CREATE TABLE comments (
     FOREIGN KEY (postId) REFERENCES posts(id)
 );
 
-CREATE NONCLUSTERED INDEX comments_postId_index ON comments(postId); 
+CREATE INDEX comments_postId_index ON comments(postId); 
