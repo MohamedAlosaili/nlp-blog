@@ -16,7 +16,7 @@ if (!getApps().length) {
       privateKey: firebaseConfig.private_key,
       projectId: firebaseConfig.project_id,
     }),
-    storageBucket: "gs://nlp-blog-adb56.appspot.com",
+    storageBucket: "gs://lughah.appspot.com",
   });
 }
 
