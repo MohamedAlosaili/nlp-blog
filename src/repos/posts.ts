@@ -35,7 +35,7 @@ export const getPublishedPosts = async (): Promise<
   RepoReturn<{ posts: IPost[] }>
 > => {
   const { rows } = await client.execute(
-    "SELECT * FROM posts WHERE isPublished = 1 AND isDeleted = 0"
+    "SELECT * FROM posts WHERE isPublished = 1 AND isDeleted = 0 ORDER BY createdAt DESC"
   );
 
   return {
