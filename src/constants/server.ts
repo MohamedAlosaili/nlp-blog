@@ -18,7 +18,7 @@ const openGraphMetaData: Metadata["openGraph"] = {
   },
   type: "website",
   description: "تابع آخر مستجدات معالجة اللغات الطبيعية مع لغة",
-  images: [`${SITE_URL}/`],
+  images: [`${SITE_URL}/images/meta-image.png`],
   url: SITE_URL,
   siteName: "لغة",
 };
