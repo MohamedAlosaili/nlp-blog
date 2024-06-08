@@ -18,6 +18,11 @@ export default async function Home() {
           <h1 className="text-center text-2xl font-bold">المقالات</h1>
 
           <div>
+            {posts?.length === 0 && (
+              <p className="text-center text-lg pt-8">
+                ابقى قريبًا نعمل على مقالاتنا...
+              </p>
+            )}
             {posts?.map(post => (
               <div
                 key={post.id}

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { cairo } from "@/lib/fonts";
+import { mada } from "@/lib/fonts";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${cairo.className} bg-main text-main`}>
+      <body className={`${mada.className} bg-main text-main`}>
         <Header />
         {children}
         <Footer />
