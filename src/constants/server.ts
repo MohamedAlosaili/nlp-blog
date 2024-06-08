@@ -18,7 +18,7 @@ const openGraphMetaData: Metadata["openGraph"] = {
   },
   type: "website",
   description: "تابع آخر مستجدات معالجة اللغات الطبيعية مع لغة",
-  images: [`${SITE_URL}/images/opengraph-image.png?v=2`],
+  images: [`${SITE_URL}/`],
   url: SITE_URL,
   siteName: "لغة",
 };
@@ -29,7 +29,7 @@ const twitterMetaData: Metadata["twitter"] = {
     default: "لغة",
   },
   description: "تابع آخر مستجدات معالجة اللغات الطبيعية مع لغة",
-  images: [`${SITE_URL}/images/twitter-image.png?v=2`],
+  images: [`${SITE_URL}/images/meta-image.png`],
   card: "summary",
 };
 

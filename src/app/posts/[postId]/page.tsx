@@ -22,6 +22,10 @@ export const generateMetadata = async ({
     onlyPublished: true,
   });
 
+  if (!data?.post) {
+    return generalMetadata;
+  }
+
   return {
     ...generalMetadata,
     title: data?.post.title,
@@ -30,11 +34,13 @@ export const generateMetadata = async ({
       ...generalMetadata.twitter,
       title: data?.post.title,
       description: data?.post.summary,
+      images: [getPostImage(data.post.coverImage)],
     },
     openGraph: {
       ...generalMetadata.openGraph,
       title: data?.post.title,
       description: data?.post.summary,
+      images: [getPostImage(data.post.coverImage)],
     },
   };
 };
