@@ -43,7 +43,7 @@ CREATE TABLE posts (
     content TEXT NOT NULL,
     userId INTEGER NOT NULL,
     isDeleted INTEGER NOT NULL DEFAULT 0,
-    isPublished INTEGER NOT NULL DEFAULT 0,
+    isPublished INTEGER NOT NULL DEFAULT 1,
     createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt TEXT,
     FOREIGN KEY (userId) REFERENCES users(id)

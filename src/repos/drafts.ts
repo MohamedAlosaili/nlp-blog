@@ -13,7 +13,7 @@ export const createNewDraft = async (data: DraftData): Promise<RepoReturn> => {
       data.userId,
     ],
   });
-  console.log("lastInsertRowid", lastInsertRowid);
+
   if (!lastInsertRowid) {
     return { errorCode: "internal_server_error" };
   }

@@ -35,7 +35,6 @@ export const TextEditor = () => {
     },
     content: formData.content,
     onUpdate({ editor }) {
-      console.log(editor.getHTML());
       onChange({ name: "content", value: editor.getHTML() });
     },
   });

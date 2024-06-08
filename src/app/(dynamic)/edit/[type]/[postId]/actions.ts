@@ -40,7 +40,7 @@ export const editPostAction = async (data: EditPostData) =>
 export const editDraftAction = async (data: EditDraftData) =>
   asyncHandler(async () => {
     const tags = data.tags.map(tag => tag.id).join(",");
-    console.log(data.tags, tags);
+
     const draftData = { ...data, tags };
     await draftsRepo.editDraft(draftData);
 
