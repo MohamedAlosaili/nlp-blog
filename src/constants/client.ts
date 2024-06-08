@@ -1,7 +1,7 @@
 import { PostFormData } from "@/types";
 
 const constants = {
-  redirectAfterLoginPath: "/",
+  redirectAfterLoginPath: "/posts/my",
   maxImageSize: 5 * 1024 * 1024,
   profilePhotoStoragePath: "profile",
   postPhotoStoragePath: "posts",

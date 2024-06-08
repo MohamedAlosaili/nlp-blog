@@ -36,7 +36,6 @@ const MyPosts = async () => {
 
   return (
     <main className="page-style">
-      <Menu />
       <div className="w-full">
         <div className="mb-20 space-y-8">
           <h1 className="text-center text-2xl font-bold">مقالاتي</h1>

@@ -207,11 +207,13 @@ export const Tags = () => {
       .then(({ errorCode, data }: APIJSONResponse<Tag[]>) => {
         setLoading(false);
         if (errorCode || !data) {
+          console.log("error", errorCode);
           return setError(errorCode ?? "internal_server_error");
         }
         setTags(data);
       })
-      .catch(() => {
+      .catch(e => {
+        console.log("catch error", e);
         setLoading(false);
         setError("internal_server_error");
       });

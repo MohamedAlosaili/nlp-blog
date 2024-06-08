@@ -23,7 +23,6 @@ const CreatePost = async () => {
 
   return (
     <main className="page-style">
-      <Menu />
       <section className="w-full flex flex-col gap-8">
         <h1 className="text-center text-2xl text-center font-semibold">
           إنشاء مقال جديد

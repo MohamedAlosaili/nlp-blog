@@ -1,5 +1,7 @@
 import { Form } from "./Form";
 
+export const dynamic = "force-dynamic";
+
 const ForgotPasswordPage = async () => {
   return (
     <main className="page-style items-center justify-center">

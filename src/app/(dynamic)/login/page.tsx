@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import { Form } from "./Form";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 const LoginPage = async () => {
   return (
     <main className="page-style items-center justify-center">
