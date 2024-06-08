@@ -177,10 +177,13 @@ export const LinkPopover = ({ editor }: ToolbarProps) => {
 
   return (
     <Popover>
-      <PopoverTrigger>
-        <ToolbarButton isActive={editor?.isActive("link")}>
-          <Link />
-        </ToolbarButton>
+      <PopoverTrigger
+        className={cn(
+          "p-2 rounded-md ",
+          editor?.isActive("link") && "font-bold text-black bg-zinc-200"
+        )}
+      >
+        <Link />
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex flex-col gap-4">
@@ -214,10 +217,14 @@ export const ImagePopover = ({ editor }: ToolbarProps) => {
 
   return (
     <Popover>
-      <PopoverTrigger>
-        <ToolbarButton isActive={editor?.isActive("image-renderer")}>
-          <Image />
-        </ToolbarButton>
+      <PopoverTrigger
+        className={cn(
+          "p-2 rounded-md ",
+          editor?.isActive("image-renderer") &&
+            "font-bold text-black bg-zinc-200"
+        )}
+      >
+        <Image />
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex flex-col gap-4">
@@ -254,10 +261,8 @@ export const VideoPopover = ({ editor }: ToolbarProps) => {
 
   return (
     <Popover>
-      <PopoverTrigger>
-        <ToolbarButton isActive={editor?.isActive("image-renderer")}>
-          <SquarePlay />
-        </ToolbarButton>
+      <PopoverTrigger className={cn("p-2 rounded-md")}>
+        <SquarePlay />
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex flex-col gap-4">
