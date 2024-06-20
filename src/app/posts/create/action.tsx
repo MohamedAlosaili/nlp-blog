@@ -43,7 +43,7 @@ export const createTagAction = ({ name }: { name: string }) =>
 
 export const saveDraftPostAction = ({ formData }: { formData: PostFormData }) =>
   asyncHandler(async () => {
-    const { title, summary, coverImage, tags, content } = formData;
+    const { title, authorName, summary, coverImage, tags, content } = formData;
     const userId = getIdFromToken();
     if (!userId) return { errorCode: "internal_server_error" };
 
@@ -51,6 +51,7 @@ export const saveDraftPostAction = ({ formData }: { formData: PostFormData }) =>
 
     const { data, errorCode } = await draftsRepo.createNewDraft({
       title,
+      authorName,
       summary,
       coverImage,
       tags: stringifiedTags,
@@ -69,12 +70,13 @@ export const saveDraftPostAction = ({ formData }: { formData: PostFormData }) =>
 
 export const publishPostAction = ({ formData }: { formData: PostFormData }) =>
   asyncHandler(async () => {
-    const { title, summary, coverImage, tags, content } = formData;
+    const { title, authorName, summary, coverImage, tags, content } = formData;
     const userId = getIdFromToken();
     if (!userId) return { errorCode: "internal_server_error" };
 
     let { data, errorCode } = await postsRepo.createNewPost({
       title,
+      authorName,
       summary,
       coverImage,
       content,

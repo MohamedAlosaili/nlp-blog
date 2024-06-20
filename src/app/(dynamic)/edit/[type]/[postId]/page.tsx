@@ -79,6 +79,7 @@ const EditPost = async ({ params: { type, postId } }: EditPostProps) => {
         <PostForm
           initialFormData={{
             title: _post.title,
+            authorName: _post.authorName,
             summary: _post.summary,
             coverImage: _post.coverImage,
             content: _post.content,

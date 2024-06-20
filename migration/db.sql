@@ -69,3 +69,6 @@ CREATE TABLE comments (
 );
 
 CREATE INDEX comments_postId_index ON comments(postId); 
+
+ALTER TABLE Drafts ADD authorName TEXT;
+ALTER TABLE Posts ADD authorName TEXT;

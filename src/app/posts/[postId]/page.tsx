@@ -101,6 +101,10 @@ const Post = async ({ params }: PostProps) => {
               __html: post.content,
             }}
           />
+
+          <p>
+            <strong>تم تدوين المقالة بواسطة: {post.authorName}</strong>
+          </p>
         </div>
         <Suspense fallback={<p>تحميل...</p>}>
           <Comments postId={post.id} />

@@ -20,6 +20,7 @@ export interface IUser {
 interface Post {
   id: number;
   title: string;
+  authorName: string;
   summary: string;
   coverImage: string;
   content: string;
@@ -85,6 +86,7 @@ export interface UpdatePhotoData {
 
 export interface DraftData {
   title: string;
+  authorName?: string;
   summary: string;
   coverImage: string;
   tags: string;
@@ -94,6 +96,7 @@ export interface DraftData {
 
 export interface NewPostData {
   title: string;
+  authorName?: string;
   summary: string;
   coverImage: string;
   content: string;

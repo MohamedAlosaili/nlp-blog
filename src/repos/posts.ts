@@ -3,9 +3,10 @@ import { EditPostData, IPost, NewPostData, RepoReturn } from "@/types";
 
 export const createNewPost = async (data: NewPostData): Promise<RepoReturn> => {
   const { lastInsertRowid } = await client.execute({
-    sql: "INSERT INTO posts (title, summary, coverImage, content, userId) VALUES (?, ?, ?, ?, ?)",
+    sql: "INSERT INTO posts (title, authorName, summary, coverImage, content, userId) VALUES (?, ?, ?, ?, ?, ?)",
     args: [
       data.title,
+      data.authorName ?? null,
       data.summary,
       data.coverImage,
       data.content,
@@ -115,7 +116,18 @@ export const getPost = async ({
   postId: number;
   onlyPublished?: boolean;
 }): Promise<RepoReturn<{ post: IPost }>> => {
-  let sql = "SELECT * FROM posts WHERE id = ? AND isDeleted = 0";
+  let sql = `
+    SELECT (
+      CASE
+        WHEN (p.authorName IS NOT NULL) THEN p.authorName
+        ELSE u.name
+      END
+      ) AS authorName,
+      p.*
+    FROM posts p
+    INNER JOIN users u on p.userId = u.id
+    WHERE p.id = ? AND p.isDeleted = 0`;
+
   if (onlyPublished) {
     sql += " AND isPublished = 1";
   }
@@ -135,9 +147,10 @@ export const getPost = async ({
 
 export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
   const { rowsAffected } = await client.execute({
-    sql: "UPDATE posts SET title = ?, summary = ?, coverImage = ?, content = ?, isPublished = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?",
+    sql: "UPDATE posts SET title = ?, authorName = ?, summary = ?, coverImage = ?, content = ?, isPublished = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?",
     args: [
       data.title,
+      data.authorName ?? null,
       data.summary,
       data.coverImage,
       data.content,

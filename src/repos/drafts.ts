@@ -3,9 +3,10 @@ import { DraftData, EditDraftData, IDraft, RepoReturn } from "@/types";
 
 export const createNewDraft = async (data: DraftData): Promise<RepoReturn> => {
   const { lastInsertRowid } = await client.execute({
-    sql: "INSERT INTO drafts (title, summary, coverImage, tags, content, userId) VALUES (?, ?, ?, ?, ?, ?)",
+    sql: "INSERT INTO drafts (title, authorName, summary, coverImage, tags, content, userId) VALUES (?, ?, ?, ?, ?, ?, ?)",
     args: [
       data.title,
+      data.authorName ?? null,
       data.summary,
       data.coverImage,
       data.tags,
@@ -88,9 +89,10 @@ export const editDraft = async (
   data: Omit<EditDraftData, "tags"> & { tags: string }
 ): Promise<RepoReturn> => {
   const { rowsAffected } = await client.execute({
-    sql: "UPDATE drafts SET title = ?, summary = ?, coverImage = ?, tags = ?, content = ? WHERE id = ?",
+    sql: "UPDATE drafts SET title = ?, authorName = ?, summary = ?, coverImage = ?, tags = ?, content = ? WHERE id = ?",
     args: [
       data.title,
+      data.authorName ?? null,
       data.summary,
       data.coverImage,
       data.tags,

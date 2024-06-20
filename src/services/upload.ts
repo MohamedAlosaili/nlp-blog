@@ -3,7 +3,9 @@ import { ErrorCode } from "@/types";
 import sharp from "sharp";
 
 export const uploadFile = async (file: File, path: string, optimize = true) => {
-  const _file = bucket.file(path);
+  const env = process.env.NODE_ENV === "production" ? "" : "dev/";
+
+  const _file = bucket.file(env + path);
 
   let fileBuffer = Buffer.from(await file.arrayBuffer());
 
@@ -23,11 +25,7 @@ export const uploadFile = async (file: File, path: string, optimize = true) => {
       },
       err => {
         console.log(err);
-        if (err) {
-          resolve({ errorCode: "internal_server_error" });
-        } else {
-          resolve({});
-        }
+        resolve({ errorCode: "internal_server_error" });
       }
     );
   });

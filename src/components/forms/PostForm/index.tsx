@@ -47,6 +47,7 @@ export const Form = () => {
     <div className="flex flex-col gap-6">
       {error && <ErrorMessage error={error} className="text-lg" />}
       <Title />
+      <AuthorName />
       <Summary />
       <CoverImage />
       <Tags />
@@ -83,6 +84,24 @@ export const Title = () => {
       enterKeyHint="next"
       value={formData.title}
       onChange={e => onChange({ name: "title", value: e.target.value })}
+    />
+  );
+};
+
+export const AuthorName = () => {
+  const { formData, loading, onChange } = use(PostFormContext);
+
+  return (
+    <Input
+      required
+      disabled={loading}
+      name="authorName"
+      label="اسم الكاتب"
+      inputMode="text"
+      placeholder="محمد سعد"
+      enterKeyHint="next"
+      value={formData.authorName}
+      onChange={e => onChange({ name: "authorName", value: e.target.value })}
     />
   );
 };
