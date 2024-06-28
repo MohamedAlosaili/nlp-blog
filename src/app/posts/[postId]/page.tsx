@@ -13,6 +13,7 @@ import { formatDate } from "@/utils/formatDate";
 import { AvatarFallback } from "@/components/ui/avatar";
 import { Metadata } from "next";
 import { generalMetadata } from "@/constants/server";
+import { getPostTags } from "@/repos/postTags";
 
 export const generateMetadata = async ({
   params,
@@ -45,16 +46,24 @@ export const generateMetadata = async ({
   };
 };
 
+const getPostData = async (postId: string) => {
+  const [{ data, errorCode }, postTags] = await Promise.all([
+    getPost({
+      postId: parseInt(postId),
+      onlyPublished: true,
+    }),
+    getPostTags({ postId: Number(postId) }),
+  ]);
+
+  return { errorCode, post: data?.post, tags: postTags.data?.tags ?? [] };
+};
+
 interface PostProps {
   params: { postId: string };
 }
 
 const Post = async ({ params }: PostProps) => {
-  const { data, errorCode } = await getPost({
-    postId: parseInt(params.postId),
-    onlyPublished: true,
-  });
-  const post = data?.post;
+  const { post, tags, errorCode } = await getPostData(params.postId);
 
   if (errorCode === "post_not_found") {
     notFound();
@@ -105,6 +114,17 @@ const Post = async ({ params }: PostProps) => {
           <p>
             <strong>تم تدوين المقالة بواسطة: {post.authorName}</strong>
           </p>
+
+          <div className="flex flex-wrap gap-2 mt-8">
+            {tags.map(tag => (
+              <div
+                key={tag.id}
+                className="flex items-center gap-2 px-2 py-1 rounded-md bg-zinc-200 text-sm"
+              >
+                <span>{tag.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
         <Suspense fallback={<p>تحميل...</p>}>
           <Comments postId={post.id} />
