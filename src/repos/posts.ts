@@ -179,9 +179,15 @@ export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
   const transaction = await client.transaction();
   try {
     const postTags = await postTagsRepo.getPostTags({ postId: data.id });
-    const isTagsChanged = !postTags.data?.tags.every(postTag =>
-      data.tags.some(tag => tag.id === postTag.id)
-    );
+    const originalTagsStringified = postTags.data?.tags
+      .map(tag => tag.id)
+      .sort((a, b) => a - b)
+      .join(",");
+    const currentTagsStringified = data.tags
+      .map(tag => tag.id)
+      .sort((a, b) => a - b)
+      .join(",");
+    const isTagsChanged = originalTagsStringified !== currentTagsStringified;
 
     let editPostRequests: Promise<any>[] = [];
     if (isTagsChanged) {
