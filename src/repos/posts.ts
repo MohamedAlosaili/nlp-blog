@@ -3,34 +3,53 @@ import { EditPostData, IPost, NewPostData, RepoReturn } from "@/types";
 import * as postTagsRepo from "./postTags";
 
 export const createNewPost = async (data: NewPostData): Promise<RepoReturn> => {
-  const { lastInsertRowid } = await client.execute({
-    sql: "INSERT INTO posts (title, authorName, summary, coverImage, content, userId) VALUES (?, ?, ?, ?, ?, ?)",
-    args: [
-      data.title,
-      data.authorName ?? null,
-      data.summary,
-      data.coverImage,
-      data.content,
-      data.userId,
-    ],
-  });
+  const transaction = await client.transaction();
+  try {
+    const { lastInsertRowid } = await transaction.execute({
+      sql: "INSERT INTO posts (title, authorName, summary, coverImage, content, userId) VALUES (?, ?, ?, ?, ?, ?)",
+      args: [
+        data.title,
+        data.authorName ?? null,
+        data.summary,
+        data.coverImage,
+        data.content,
+        data.userId,
+      ],
+    });
 
-  if (!lastInsertRowid) {
+    if (!lastInsertRowid) {
+      throw new Error("internal_server_error");
+    }
+
+    const postId = parseInt(lastInsertRowid.toString());
+    const postTags = data.tags.map(tag =>
+      postTagsRepo.addPostTag({ postId, tagId: tag.id, transaction })
+    );
+
+    const result = await Promise.all(postTags);
+
+    const failed = result.find(r => r.errorCode);
+    if (failed) {
+      throw new Error(failed.errorCode);
+    }
+
+    await transaction.commit();
+    return {
+      data: {
+        post: {
+          id: parseInt(lastInsertRowid.toString()),
+          title: data.title,
+          summary: data.summary,
+          coverImage: data.coverImage,
+          content: data.content,
+          userId: data.userId,
+        },
+      },
+    };
+  } catch (error) {
+    await transaction.rollback();
     return { errorCode: "internal_server_error" };
   }
-
-  return {
-    data: {
-      post: {
-        id: parseInt(lastInsertRowid.toString()),
-        title: data.title,
-        summary: data.summary,
-        coverImage: data.coverImage,
-        content: data.content,
-        userId: data.userId,
-      },
-    },
-  };
 };
 
 export const getPublishedPosts = async (): Promise<
@@ -166,15 +185,19 @@ export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
 
     let editPostRequests: Promise<any>[] = [];
     if (isTagsChanged) {
-      await postTagsRepo.deletePostTags({ postId: data.id });
+      await postTagsRepo.deletePostTags({ postId: data.id, transaction });
       editPostRequests.push(
         ...data.tags.map(tag =>
-          postTagsRepo.addPostTag({ postId: data.id, tagId: tag.id })
+          postTagsRepo.addPostTag({
+            postId: data.id,
+            tagId: tag.id,
+            transaction,
+          })
         )
       );
     }
 
-    const { rows } = await client.execute({
+    const { rows } = await transaction.execute({
       sql: "SELECT isPublished FROM Posts WHERE id = ?",
       args: [data.id],
     });
@@ -183,7 +206,7 @@ export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
 
     if (!post.isPublished && data.isPublished) {
       editPostRequests.push(
-        client.execute({
+        transaction.execute({
           sql: "UPDATE posts SET createdAt = CURRENT_TIMESTAMP WHERE id = ?",
           args: [data.id],
         })
@@ -191,7 +214,7 @@ export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
     }
 
     const [{ rowsAffected }] = await Promise.all([
-      client.execute({
+      transaction.execute({
         sql: `
           UPDATE posts
           SET
@@ -227,6 +250,6 @@ export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
   } catch (error) {
     await transaction.rollback();
     transaction.close();
-    throw new Error("internal_server_error");
+    return { errorCode: "internal_server_error" };
   }
 };

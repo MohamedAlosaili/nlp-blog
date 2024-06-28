@@ -1,4 +1,4 @@
-import { ErrorCode } from ".";
+import { ErrorCode, Tag } from ".";
 
 export interface GetUserData {
   type: "id" | "email";
@@ -99,6 +99,7 @@ export interface NewPostData {
   authorName?: string;
   summary: string;
   coverImage: string;
+  tags: Tag[];
   content: string;
   userId: number;
 }

@@ -74,26 +74,36 @@ export const publishPostAction = ({ formData }: { formData: PostFormData }) =>
     const userId = getIdFromToken();
     if (!userId) return { errorCode: "internal_server_error" };
 
+    if (!title.trim()) {
+      return { errorCode: "title_required" };
+    }
+
+    if (!summary.trim()) {
+      return { errorCode: "summary_required" };
+    }
+
+    if (!coverImage) {
+      return { errorCode: "coverImage_required" };
+    }
+
+    if (tags.length === 0) {
+      return { errorCode: "tags_required" };
+    }
+
+    if (content.length === 0) {
+      return { errorCode: "content_required" };
+    }
+
     let { data, errorCode } = await postsRepo.createNewPost({
-      title,
-      authorName,
-      summary,
+      title: title.trim(),
+      authorName: authorName?.trim(),
+      summary: summary.trim(),
       coverImage,
       content,
+      tags,
       userId,
     });
 
-    if (errorCode) {
-      return { errorCode };
-    }
-
-    const postTags = tags.map(tag =>
-      postTasRepo.addPostTag({ postId: data.post.id, tagId: tag.id })
-    );
-
-    const result = await Promise.all(postTags);
-
-    errorCode = result.find(r => r.errorCode)?.errorCode;
     if (errorCode) {
       return { errorCode };
     }

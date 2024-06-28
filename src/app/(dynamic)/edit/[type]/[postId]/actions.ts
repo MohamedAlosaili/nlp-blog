@@ -3,13 +3,16 @@
 import { asyncHandler } from "@/helpers/asyncHandler";
 import { EditDraftData, EditPostData } from "@/types";
 import * as postsRepo from "@/repos/posts";
-import * as postTagsRepo from "@/repos/postTags";
 import * as draftsRepo from "@/repos/drafts";
 import { revalidatePath } from "next/cache";
 
 export const editPostAction = async (data: EditPostData) =>
   asyncHandler(async () => {
-    await postsRepo.editPost(data);
+    const { errorCode } = await postsRepo.editPost(data);
+
+    if (errorCode) {
+      return { errorCode };
+    }
 
     revalidatePath("/posts/my");
     revalidatePath(`/posts/${data.id}`);

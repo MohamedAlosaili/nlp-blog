@@ -1,14 +1,17 @@
 import { client } from "@/lib/db";
 import { RepoReturn, Tag } from "@/types";
+import { Transaction } from "@libsql/client";
 
 export const addPostTag = async ({
   postId,
   tagId,
+  transaction,
 }: {
   postId: number;
   tagId: number;
+  transaction?: Transaction;
 }): Promise<RepoReturn> => {
-  const { lastInsertRowid } = await client.execute({
+  const { lastInsertRowid } = await (transaction ?? client).execute({
     sql: "INSERT INTO postTags (postId, tagId) VALUES (?, ?)",
     args: [postId, tagId],
   });
@@ -50,10 +53,12 @@ export const getPostTags = async ({
 
 export const deletePostTags = async ({
   postId,
+  transaction,
 }: {
   postId: number;
+  transaction?: Transaction;
 }): Promise<RepoReturn> => {
-  await client.execute({
+  await (transaction ?? client).execute({
     sql: "DELETE FROM postTags WHERE postId = ?",
     args: [postId],
   });

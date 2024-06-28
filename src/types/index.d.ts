@@ -52,6 +52,7 @@ export type ErrorCode =
   | "post_not_found"
   | "sender_name_required"
   | "content_required"
-  | "content_too_long";
+  | "content_too_long"
+  | "coverImage_required";
 
 export type CookieName = "session";
