@@ -3,7 +3,10 @@ import { RepoReturn, Tag } from "@/types";
 
 export const getTags = async () => {
   const tags = await client.execute("SELECT * FROM tags");
-  return tags.rows as unknown as Tag[];
+  return (tags.rows as unknown as Tag[]).map(tag => ({
+    ...tag,
+    id: parseInt(tag.id.toString()),
+  }));
 };
 
 export const createTag = async ({

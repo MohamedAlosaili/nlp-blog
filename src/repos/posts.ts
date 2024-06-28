@@ -1,5 +1,6 @@
 import { client } from "@/lib/db";
 import { EditPostData, IPost, NewPostData, RepoReturn } from "@/types";
+import * as postTagsRepo from "./postTags";
 
 export const createNewPost = async (data: NewPostData): Promise<RepoReturn> => {
   const { lastInsertRowid } = await client.execute({
@@ -41,7 +42,10 @@ export const getPublishedPosts = async (): Promise<
 
   return {
     data: {
-      posts: rows as unknown as IPost[],
+      posts: (rows as unknown as IPost[]).map(post => ({
+        ...post,
+        id: parseInt(post.id.toString()),
+      })),
     },
   };
 };
@@ -49,13 +53,16 @@ export const getUserPublishedPosts = async (
   userId: number
 ): Promise<RepoReturn<{ posts: IPost[] }>> => {
   const { rows } = await client.execute({
-    sql: "SELECT * FROM posts WHERE userId = ? AND isPublished = 1 AND isDeleted = 0",
+    sql: "SELECT * FROM posts WHERE userId = ? AND isPublished = 1 AND isDeleted = 0 ORDER BY createdAt DESC",
     args: [userId],
   });
 
   return {
     data: {
-      posts: rows as unknown as IPost[],
+      posts: (rows as unknown as IPost[]).map(post => ({
+        ...post,
+        id: parseInt(post.id.toString()),
+      })),
     },
   };
 };
@@ -64,13 +71,16 @@ export const getUserUnPublishedPosts = async (
   userId: number
 ): Promise<RepoReturn<{ posts: IPost[] }>> => {
   const { rows } = await client.execute({
-    sql: "SELECT * FROM posts WHERE userId = ? AND isPublished = 0 AND isDeleted = 0",
+    sql: "SELECT * FROM posts WHERE userId = ? AND isPublished = 0 AND isDeleted = 0 ORDER BY createdAt DESC",
     args: [userId],
   });
 
   return {
     data: {
-      posts: rows as unknown as IPost[],
+      posts: (rows as unknown as IPost[]).map(post => ({
+        ...post,
+        id: parseInt(post.id.toString()),
+      })),
     },
   };
 };
@@ -140,55 +150,83 @@ export const getPost = async ({
     return { errorCode: "post_not_found" };
   }
 
+  const { id, ...post } = rows[0] as unknown as IPost;
   return {
-    data: { post: rows[0] as unknown as IPost },
+    data: { post: { ...post, id: parseInt(id.toString()) } },
   };
 };
 
 export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
-  const { rows } = await client.execute({
-    sql: "SELECT isPublished FROM Posts WHERE id = ?",
-    args: [data.id],
-  });
+  const transaction = await client.transaction();
+  try {
+    const postTags = await postTagsRepo.getPostTags({ postId: data.id });
+    const isTagsChanged = !postTags.data?.tags.every(postTag =>
+      data.tags.some(tag => tag.id === postTag.id)
+    );
 
-  const post = rows[0] as unknown as IPost;
+    let editPostRequests: Promise<any>[] = [];
+    if (isTagsChanged) {
+      await postTagsRepo.deletePostTags({ postId: data.id });
+      editPostRequests.push(
+        ...data.tags.map(tag =>
+          postTagsRepo.addPostTag({ postId: data.id, tagId: tag.id })
+        )
+      );
+    }
 
-  const [{ rowsAffected }] = await Promise.all([
-    client.execute({
-      sql: `
-      UPDATE posts
-      SET
-        title = ?,
-        authorName = ?,
-        summary = ?,
-        coverImage = ?,
-        content = ?,
-        isPublished = ?,
-        updatedAt = CURRENT_TIMESTAMP
-      WHERE
-        id = ?
-    `,
-      args: [
-        data.title,
-        data.authorName ?? null,
-        data.summary,
-        data.coverImage,
-        data.content,
-        data.isPublished ? 1 : 0,
-        data.id,
-      ],
-    }),
-    !post.isPublished &&
-      data.isPublished &&
+    const { rows } = await client.execute({
+      sql: "SELECT isPublished FROM Posts WHERE id = ?",
+      args: [data.id],
+    });
+
+    const post = rows[0] as unknown as IPost;
+
+    if (!post.isPublished && data.isPublished) {
+      editPostRequests.push(
+        client.execute({
+          sql: "UPDATE posts SET createdAt = CURRENT_TIMESTAMP WHERE id = ?",
+          args: [data.id],
+        })
+      );
+    }
+
+    const [{ rowsAffected }] = await Promise.all([
       client.execute({
-        sql: "UPDATE posts SET createdAt = CURRENT_TIMESTAMP WHERE id = ?",
-        args: [data.id],
+        sql: `
+          UPDATE posts
+          SET
+            title = ?,
+            authorName = ?,
+            summary = ?,
+            coverImage = ?,
+            content = ?,
+            isPublished = ?,
+            updatedAt = CURRENT_TIMESTAMP
+          WHERE
+            id = ?
+        `,
+        args: [
+          data.title,
+          data.authorName ?? null,
+          data.summary,
+          data.coverImage,
+          data.content,
+          data.isPublished ? 1 : 0,
+          data.id,
+        ],
       }),
-  ]);
+      ...editPostRequests,
+    ]);
 
-  if (rowsAffected === 0) {
-    return { errorCode: "internal_server_error" };
+    if (rowsAffected === 0) {
+      throw new Error("internal_server_error");
+    }
+
+    await transaction.commit();
+    return {};
+  } catch (error) {
+    await transaction.rollback();
+    transaction.close();
+    throw new Error("internal_server_error");
   }
-
-  return {};
 };

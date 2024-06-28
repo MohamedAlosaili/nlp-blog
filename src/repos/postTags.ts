@@ -40,7 +40,10 @@ export const getPostTags = async ({
 
   return {
     data: {
-      tags: rows as unknown as Tag[],
+      tags: (rows as unknown as Tag[]).map(tag => ({
+        ...tag,
+        id: parseInt(tag.id.toString()),
+      })),
     },
   };
 };

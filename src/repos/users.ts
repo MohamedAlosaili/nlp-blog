@@ -32,9 +32,9 @@ export const getUser = async ({ type, value }: GetUserData) => {
     return;
   }
 
-  const user = rows[0];
+  const { id, ...user } = rows[0] as unknown as IUser;
 
-  return user as unknown as IUser;
+  return { ...user, id: parseInt(id.toString()) };
 };
 
 export const createUser = async ({ name, email, password }: CreateUserData) => {

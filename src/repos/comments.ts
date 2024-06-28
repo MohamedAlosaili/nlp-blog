@@ -11,7 +11,14 @@ export const getPostComments = async ({
     args: [postId],
   });
 
-  return { data: { comments: rows as unknown as IComment[] } };
+  return {
+    data: {
+      comments: (rows as unknown as IComment[]).map(comment => ({
+        ...comment,
+        id: parseInt(comment.id.toString()),
+      })),
+    },
+  };
 };
 
 export const createComment = async (data: CommentData): Promise<RepoReturn> => {

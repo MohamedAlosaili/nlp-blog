@@ -44,7 +44,10 @@ export const getUserDrafts = async (
 
   return {
     data: {
-      drafts: rows as unknown as IDraft[],
+      drafts: (rows as unknown as IDraft[]).map(draft => ({
+        ...draft,
+        id: parseInt(draft.id.toString()),
+      })),
     },
   };
 };
@@ -80,8 +83,10 @@ export const getDraft = async ({
     return { errorCode: "post_not_found" };
   }
 
+  const { id, ...draft } = rows[0] as unknown as IDraft;
+
   return {
-    data: { draft: rows[0] as unknown as IDraft },
+    data: { draft: { ...draft, id: parseInt(id.toString()) } },
   };
 };
 

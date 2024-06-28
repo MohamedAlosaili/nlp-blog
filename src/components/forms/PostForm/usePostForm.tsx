@@ -33,10 +33,10 @@ export const usePostForm = ({
     name: T;
     value: PostFormData[T];
   }) => {
-    setFormData({
-      ...formData,
+    setFormData(prevFormData => ({
+      ...prevFormData,
       [name]: value,
-    });
+    }));
   };
 
   const onDraftSubmit = async () => {
