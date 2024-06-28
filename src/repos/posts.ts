@@ -146,18 +146,45 @@ export const getPost = async ({
 };
 
 export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
-  const { rowsAffected } = await client.execute({
-    sql: "UPDATE posts SET title = ?, authorName = ?, summary = ?, coverImage = ?, content = ?, isPublished = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?",
-    args: [
-      data.title,
-      data.authorName ?? null,
-      data.summary,
-      data.coverImage,
-      data.content,
-      data.isPublished ? 1 : 0,
-      data.id,
-    ],
+  const { rows } = await client.execute({
+    sql: "SELECT isPublished FROM Posts WHERE id = ?",
+    args: [data.id],
   });
+
+  const post = rows[0] as unknown as IPost;
+
+  const [{ rowsAffected }] = await Promise.all([
+    client.execute({
+      sql: `
+      UPDATE posts
+      SET
+        title = ?,
+        authorName = ?,
+        summary = ?,
+        coverImage = ?,
+        content = ?,
+        isPublished = ?,
+        updatedAt = CURRENT_TIMESTAMP
+      WHERE
+        id = ?
+    `,
+      args: [
+        data.title,
+        data.authorName ?? null,
+        data.summary,
+        data.coverImage,
+        data.content,
+        data.isPublished ? 1 : 0,
+        data.id,
+      ],
+    }),
+    !post.isPublished &&
+      data.isPublished &&
+      client.execute({
+        sql: "UPDATE posts SET createdAt = CURRENT_TIMESTAMP WHERE id = ?",
+        args: [data.id],
+      }),
+  ]);
 
   if (rowsAffected === 0) {
     return { errorCode: "internal_server_error" };
