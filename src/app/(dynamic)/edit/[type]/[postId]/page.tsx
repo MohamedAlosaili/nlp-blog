@@ -15,6 +15,55 @@ interface EditPostProps {
 export const dynamic = "force-dynamic";
 
 const EditPost = async ({ params: { type, postId } }: EditPostProps) => {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login?returnUrl=/posts/create");
+  }
+
+  if (user.verified === 0) {
+    return <NotVerifiedUser />;
+  }
+
+  const { post, tags } = await getPostWithTags({
+    postId,
+    type,
+    userId: user.id,
+  });
+
+  if (!post) {
+    return <div>المقال غير موجود</div>;
+  }
+
+  return (
+    <main className="page-style">
+      <section className="w-full flex flex-col gap-8">
+        <h1 className="text-center text-2xl text-center font-semibold">
+          تعديل المقال
+        </h1>
+        <PostForm
+          initialFormData={{
+            title: post.title,
+            authorName: post.authorName,
+            summary: post.summary,
+            coverImage: post.coverImage,
+            content: post.content,
+            isPublished: "isPublished" in post ? post.isPublished : undefined,
+            tags,
+          }}
+        />
+      </section>
+    </main>
+  );
+};
+
+type GetPostWithTagsParams = EditPostProps["params"] & { userId: number };
+
+const getPostWithTags = async ({
+  postId,
+  type,
+  userId,
+}: GetPostWithTagsParams) => {
   let postRequest: ReturnType<
     typeof draftsRepo.getDraft | typeof postsRepo.getPost
   >;
@@ -35,29 +84,13 @@ const EditPost = async ({ params: { type, postId } }: EditPostProps) => {
       .then(res => res.data?.tags ?? []);
   }
 
-  let [user, post, tags] = await Promise.all([
-    getCurrentUser(),
-    postRequest,
-    tagsRequest,
-  ]);
+  let [post, tags] = await Promise.all([postRequest, tagsRequest]);
 
-  if (!user) {
-    redirect("/login?returnUrl=/posts/create");
-  }
-
-  if (user.verified === 0) {
-    return <NotVerifiedUser />;
-  }
-
-  const _post =
+  let _post =
     post.data && "post" in post.data ? post.data.post : post.data?.draft;
 
-  if (user.id !== _post?.userId) {
+  if (userId !== _post?.userId) {
     redirect("/posts/my");
-  }
-
-  if (!_post) {
-    return <div>المقال غير موجود</div>;
   }
 
   if (type === "drafts" && "tags" in _post) {
@@ -65,31 +98,7 @@ const EditPost = async ({ params: { type, postId } }: EditPostProps) => {
     tags = tags.filter(tag => draftTags.includes(tag.id));
   }
 
-  let isPublished = false;
-  if ("isPublished" in _post) {
-    isPublished = _post.isPublished;
-  }
-
-  return (
-    <main className="page-style">
-      <section className="w-full flex flex-col gap-8">
-        <h1 className="text-center text-2xl text-center font-semibold">
-          تعديل المقال
-        </h1>
-        <PostForm
-          initialFormData={{
-            title: _post.title,
-            authorName: _post.authorName,
-            summary: _post.summary,
-            coverImage: _post.coverImage,
-            content: _post.content,
-            isPublished,
-            tags,
-          }}
-        />
-      </section>
-    </main>
-  );
+  return { post: _post, tags };
 };
 
 export default EditPost;
