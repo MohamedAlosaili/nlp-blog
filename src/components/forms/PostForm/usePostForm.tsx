@@ -113,7 +113,7 @@ export const usePostForm = ({
         return;
       }
 
-      if (typeof formData.isPublished === "boolean" && !formData.isPublished) {
+      if (params.type !== "drafts" && !formData.isPublished) {
         router.push(`/posts/my`);
       } else {
         router.push(`/posts/${postId}`);
