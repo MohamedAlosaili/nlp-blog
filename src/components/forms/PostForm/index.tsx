@@ -10,6 +10,7 @@ import { TagsCombobox } from "@/components/ui/TagsCompobox";
 import { BsXCircle } from "@/components/icons/reactIcons";
 import { randomId } from "@/lib/randomId";
 import {
+  checkSlugAction,
   deleteImageAction,
   uploadImageAction,
 } from "../../../app/posts/create/action";
@@ -48,6 +49,7 @@ export const Form = () => {
       {error && <ErrorMessage error={error} className="text-lg" />}
       <Title />
       <AuthorName />
+      <Slug />
       <Summary />
       <CoverImage />
       <Tags />
@@ -103,6 +105,80 @@ export const AuthorName = () => {
       value={formData.authorName}
       onChange={e => onChange({ name: "authorName", value: e.target.value })}
     />
+  );
+};
+
+export const Slug = () => {
+  const { formData, loading, onChange } = use(PostFormContext);
+  const [slug, setSlug] = useState(formData.slug);
+  const [checking, setChecking] = useState(false);
+  const [error, setError] = useState<ErrorCode>();
+  const params = useParams();
+
+  const checkSlugUniqueness = async () => {
+    if (slug.length < 3) {
+      return setError("slug_too_short");
+    }
+
+    if (slug === formData.slug) return;
+
+    setError(undefined);
+    setChecking(true);
+    try {
+      const { errorCode, data } = await checkSlugAction({
+        slug,
+        postId: params.postId ? Number(params.postId) : undefined,
+      });
+      setChecking(false);
+
+      if (errorCode || !data?.slug) {
+        return setError(errorCode ?? "internal_server_error");
+      }
+
+      onChange({ name: "slug", value: data.slug });
+    } catch (error) {
+      setChecking(false);
+      setError("internal_server_error");
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div>
+        <p className="font-semibold">رابط المقال</p>
+        <div className="mt-1 text-sm flex flex-col gap-1">
+          <p>
+            ادخل الاسم باللغة الإنجليزية وسيتم تحويله إلى شكل يناسب المتصفحات
+          </p>
+          <p>مثال: Nlp Introduction سيتم تحويله إلى nlp-introduction</p>
+          <p>رابط المقال يجب أن يكون فريد، سيتم التحقق بعد كتابته</p>
+        </div>
+      </div>
+      <Input
+        required
+        disabled={loading}
+        name="slug"
+        inputMode="text"
+        placeholder="Nlp Introduction"
+        onBlur={checkSlugUniqueness}
+        enterKeyHint="next"
+        value={slug}
+        onChange={e => setSlug(e.target.value)}
+      />
+      {error && <ErrorMessage error={error} className="text-right" />}
+      {checking ? (
+        <div className="flex items-center text-xs">
+          <LoadingSpinner />
+          جاري التحقق{" "}
+        </div>
+      ) : (
+        formData.slug && (
+          <div className="text-xs sm:text-base">
+            www.lughah.org/posts/{formData.slug}
+          </div>
+        )
+      )}
+    </div>
   );
 };
 

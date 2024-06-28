@@ -115,10 +115,11 @@ export const usePostForm = ({
       }
 
       if (
-        params.type !== "drafts" &&
-        (formData.isPublished || pathname === "/posts/create")
+        params.type === "drafts" ||
+        formData.isPublished ||
+        pathname === "/posts/create"
       ) {
-        router.push(`/posts/${postId}`);
+        router.push(`/posts/${formData.slug}`);
       } else {
         router.push(`/posts/my`);
       }
@@ -132,6 +133,8 @@ export const usePostForm = ({
     setError(undefined);
     if (!formData.title.trim()) {
       return "title_required";
+    } else if (!formData.slug.trim()) {
+      return "slug_required";
     } else if (!formData.summary.trim()) {
       return "summary_required";
     } else if (!formData.coverImage) {

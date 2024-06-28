@@ -5,9 +5,20 @@ import { EditDraftData, EditPostData } from "@/types";
 import * as postsRepo from "@/repos/posts";
 import * as draftsRepo from "@/repos/drafts";
 import { revalidatePath } from "next/cache";
+import { slugify } from "@/lib/slugify";
 
 export const editPostAction = async (data: EditPostData) =>
   asyncHandler(async () => {
+    const slug = slugify(data.slug);
+    const isSlugExists = await postsRepo.isSlugExists({
+      slug,
+      postId: data.id,
+    });
+
+    if (isSlugExists) {
+      return { errorCode: "slug_duplicated" };
+    }
+
     const { errorCode } = await postsRepo.editPost(data);
 
     if (errorCode) {

@@ -53,6 +53,9 @@ export type ErrorCode =
   | "sender_name_required"
   | "content_required"
   | "content_too_long"
-  | "coverImage_required";
+  | "slug_required"
+  | "slug_duplicated"
+  | "invalid_slug"
+  | "slug_too_short";
 
 export type CookieName = "session";

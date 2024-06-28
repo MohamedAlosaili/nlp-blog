@@ -45,6 +45,7 @@ const EditPost = async ({ params: { type, postId } }: EditPostProps) => {
           initialFormData={{
             title: post.title,
             authorName: post.authorName,
+            slug: post.slug,
             summary: post.summary,
             coverImage: post.coverImage,
             content: post.content,

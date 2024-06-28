@@ -8,6 +8,7 @@ const constants = {
   defaultFormData: {
     title: "",
     tags: [],
+    slug: "",
     summary: "",
     coverImage: "",
     content: "<h1>اكتب هنا...</h1>",

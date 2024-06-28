@@ -23,6 +23,10 @@ const errorMessages: Record<ErrorCode, string> = {
   tags_required: "التصنيفات مطلوبة",
   post_not_found: "المقالة غير موجودة",
   sender_name_required: "الاسم مطلوب",
+  invalid_slug: "رابط المقال غير صحيح",
+  slug_duplicated: "رابط المقال موجود مسبقًا",
+  slug_required: "رابط المقال مطلوب",
+  slug_too_short: "رابط المقال يجب أن يكون 3 أحروف أو أكثر",
 };
 
 export const toErrorMessage = ({ errorCode }: { errorCode: ErrorCode }) => {

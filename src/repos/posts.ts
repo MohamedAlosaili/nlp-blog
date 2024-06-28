@@ -6,10 +6,11 @@ export const createNewPost = async (data: NewPostData): Promise<RepoReturn> => {
   const transaction = await client.transaction();
   try {
     const { lastInsertRowid } = await transaction.execute({
-      sql: "INSERT INTO posts (title, authorName, summary, coverImage, content, userId) VALUES (?, ?, ?, ?, ?, ?)",
+      sql: "INSERT INTO posts (title, authorName, slug, summary, coverImage, content, userId) VALUES (?, ?, ?, ?, ?, ?, ?)",
       args: [
         data.title,
         data.authorName ?? null,
+        data.slug,
         data.summary,
         data.coverImage,
         data.content,
@@ -110,7 +111,7 @@ export const deletePost = async ({
   postId: number;
 }): Promise<RepoReturn> => {
   const { rowsAffected } = await client.execute({
-    sql: "UPDATE posts SET isDeleted = 1 WHERE id = ?",
+    sql: "UPDATE posts SET isDeleted = 1, slug=null WHERE id = ?",
     args: [postId],
   });
 
@@ -175,6 +176,36 @@ export const getPost = async ({
   };
 };
 
+export const getPostBySlug = async ({
+  slug,
+}: {
+  slug: string;
+}): Promise<RepoReturn<{ post: IPost }>> => {
+  const { rows } = await client.execute({
+    sql: `
+    SELECT (
+      CASE
+        WHEN (p.authorName IS NOT NULL) THEN p.authorName
+        ELSE u.name
+      END
+      ) AS authorName,
+      p.*
+    FROM posts p
+    INNER JOIN users u on p.userId = u.id
+    WHERE p.slug = ? AND isPublished = 1 AND p.isDeleted = 0`,
+    args: [slug],
+  });
+
+  if (rows.length === 0) {
+    return { errorCode: "post_not_found" };
+  }
+
+  const { id, ...post } = rows[0] as unknown as IPost;
+  return {
+    data: { post: { ...post, id: parseInt(id.toString()) } },
+  };
+};
+
 export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
   const transaction = await client.transaction();
   try {
@@ -226,6 +257,7 @@ export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
           SET
             title = ?,
             authorName = ?,
+            slug = ?,
             summary = ?,
             coverImage = ?,
             content = ?,
@@ -237,6 +269,7 @@ export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
         args: [
           data.title,
           data.authorName ?? null,
+          data.slug,
           data.summary,
           data.coverImage,
           data.content,
@@ -258,4 +291,32 @@ export const editPost = async (data: EditPostData): Promise<RepoReturn> => {
     transaction.close();
     return { errorCode: "internal_server_error" };
   }
+};
+
+export const isSlugExists = async ({
+  slug,
+  postId,
+}: {
+  slug: string;
+  postId?: number;
+}) => {
+  let isExists = false;
+
+  if (postId) {
+    const { rows } = await client.execute({
+      sql: "SELECT slug FROM posts WHERE slug = ? AND id != ?",
+      args: [slug, postId],
+    });
+
+    isExists = rows.length > 0;
+  } else {
+    const { rows } = await client.execute({
+      sql: "SELECT slug FROM posts WHERE slug = ?",
+      args: [slug],
+    });
+
+    isExists = rows.length > 0;
+  }
+
+  return isExists;
 };

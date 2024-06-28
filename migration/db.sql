@@ -72,3 +72,9 @@ CREATE INDEX comments_postId_index ON comments(postId);
 
 ALTER TABLE Drafts ADD authorName TEXT;
 ALTER TABLE Posts ADD authorName TEXT;
+
+ALTER TABLE Posts ADD slug TEXT;
+ALTER TABLE Draft ADD slug TEXT;
+-- prevent duplicate in non-nulls slugs
+CREATE UNIQUE INDEX post_slug_index ON posts(slug)
+WHERE (slug IS NOT NULL)

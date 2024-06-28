@@ -11,6 +11,7 @@ import * as draftsRepo from "@/repos/drafts";
 import * as postsRepo from "@/repos/posts";
 import * as postTasRepo from "@/repos/postTags";
 import { revalidatePath } from "next/cache";
+import { slugify } from "@/lib/slugify";
 
 export const uploadImageAction = async ({ formData }: { formData: FormData }) =>
   asyncHandler(async () => {
@@ -54,6 +55,7 @@ export const saveDraftPostAction = ({ formData }: { formData: PostFormData }) =>
       authorName,
       summary,
       coverImage,
+      slug: slugify(formData.slug),
       tags: stringifiedTags,
       content,
       userId,
@@ -83,7 +85,7 @@ export const publishPostAction = ({ formData }: { formData: PostFormData }) =>
     }
 
     if (!coverImage) {
-      return { errorCode: "coverImage_required" };
+      return { errorCode: "cover_image_required" };
     }
 
     if (tags.length === 0) {
@@ -94,12 +96,25 @@ export const publishPostAction = ({ formData }: { formData: PostFormData }) =>
       return { errorCode: "content_required" };
     }
 
+    if (!formData.slug || formData.slug.length < 3) {
+      return { errorCode: !formData.slug ? "slug_required" : "slug_too_short" };
+    }
+
+    const slug = slugify(formData.slug);
+
+    const isSlugExists = await postsRepo.isSlugExists({ slug });
+
+    if (isSlugExists) {
+      return { errorCode: "slug_duplicated" };
+    }
+
     let { data, errorCode } = await postsRepo.createNewPost({
       title: title.trim(),
       authorName: authorName?.trim(),
       summary: summary.trim(),
       coverImage,
       content,
+      slug,
       tags,
       userId,
     });
@@ -111,4 +126,23 @@ export const publishPostAction = ({ formData }: { formData: PostFormData }) =>
     revalidatePath("/posts/my");
     revalidatePath(`/`);
     return { data };
+  });
+
+export const checkSlugAction = ({
+  slug,
+  postId,
+}: {
+  slug: string;
+  postId?: number;
+}) =>
+  asyncHandler(async () => {
+    const slugifyed = slugify(slug);
+
+    const isExists = await postsRepo.isSlugExists({ slug: slugifyed, postId });
+
+    if (isExists) {
+      return { errorCode: "slug_duplicated" };
+    }
+
+    return { data: { slug: slugifyed } };
   });

@@ -21,6 +21,7 @@ interface Post {
   id: number;
   title: string;
   authorName: string;
+  slug: string;
   summary: string;
   coverImage: string;
   content: string;
@@ -87,6 +88,7 @@ export interface UpdatePhotoData {
 export interface DraftData {
   title: string;
   authorName?: string;
+  slug: string;
   summary: string;
   coverImage: string;
   tags: string;
@@ -97,6 +99,7 @@ export interface DraftData {
 export interface NewPostData {
   title: string;
   authorName?: string;
+  slug: string;
   summary: string;
   coverImage: string;
   tags: Tag[];

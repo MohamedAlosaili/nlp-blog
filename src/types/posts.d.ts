@@ -1,6 +1,7 @@
 export interface PostFormData {
   title: string;
   authorName?: string;
+  slug: string;
   tags: Tag[];
   coverImage: string;
   summary: string;
