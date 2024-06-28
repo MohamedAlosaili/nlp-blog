@@ -328,10 +328,10 @@ export const Logo = (props: React.ComponentProps<"svg">) => (
         y2="200.67"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#93C6B5" />
-        <stop offset="0.09" stop-color="#87B9AD" />
-        <stop offset="0.64" stop-color="#41687F" />
-        <stop offset="0.89" stop-color="#26496D" />
+        <stop stopColor="#93C6B5" />
+        <stop offset="0.09" stopColor="#87B9AD" />
+        <stop offset="0.64" stopColor="#41687F" />
+        <stop offset="0.89" stopColor="#26496D" />
       </linearGradient>
       <linearGradient
         id="paint1_linear_2_65"
@@ -341,10 +341,10 @@ export const Logo = (props: React.ComponentProps<"svg">) => (
         y2="253.62"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#93C6B5" />
-        <stop offset="0.09" stop-color="#87B9AD" />
-        <stop offset="0.64" stop-color="#41687F" />
-        <stop offset="0.89" stop-color="#26496D" />
+        <stop stopColor="#93C6B5" />
+        <stop offset="0.09" stopColor="#87B9AD" />
+        <stop offset="0.64" stopColor="#41687F" />
+        <stop offset="0.89" stopColor="#26496D" />
       </linearGradient>
       <linearGradient
         id="paint2_linear_2_65"
@@ -354,10 +354,10 @@ export const Logo = (props: React.ComponentProps<"svg">) => (
         y2="270.12"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#93C6B5" />
-        <stop offset="0.09" stop-color="#87B9AD" />
-        <stop offset="0.64" stop-color="#41687F" />
-        <stop offset="0.89" stop-color="#26496D" />
+        <stop stopColor="#93C6B5" />
+        <stop offset="0.09" stopColor="#87B9AD" />
+        <stop offset="0.64" stopColor="#41687F" />
+        <stop offset="0.89" stopColor="#26496D" />
       </linearGradient>
       <linearGradient
         id="paint3_linear_2_65"
@@ -367,10 +367,10 @@ export const Logo = (props: React.ComponentProps<"svg">) => (
         y2="150.04"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#93C6B5" />
-        <stop offset="0.09" stop-color="#87B9AD" />
-        <stop offset="0.64" stop-color="#41687F" />
-        <stop offset="0.89" stop-color="#26496D" />
+        <stop stopColor="#93C6B5" />
+        <stop offset="0.09" stopColor="#87B9AD" />
+        <stop offset="0.64" stopColor="#41687F" />
+        <stop offset="0.89" stopColor="#26496D" />
       </linearGradient>
       <clipPath id="clip0_2_65">
         <rect width="850" height="350" fill="white" />
