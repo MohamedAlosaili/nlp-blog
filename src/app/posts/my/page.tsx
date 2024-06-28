@@ -188,7 +188,7 @@ const Card = ({ post, type, buttons }: CardProps) => (
     key={post.id}
     className="flex flex-col sm:flex-row items-center gap-4 border-b-2 border-zinc-300 pb-8 mb-8"
   >
-    <Link href={type === "published" ? `/posts/${post.id}` : "#"}>
+    <Link href={type === "published" ? `/posts/${post.slug}` : "#"}>
       <Image
         src={getPostImage(post.coverImage)}
         alt={post.title}
@@ -200,7 +200,7 @@ const Card = ({ post, type, buttons }: CardProps) => (
     <div className="w-full flex-1 flex flex-col-reverse sm:flex-row gap-4">
       <div className="flex-1 flex flex-col gap-1">
         <h3 className="text-lg font-semibold">
-          <Link href={type === "published" ? `/posts/${post.id}` : "#"}>
+          <Link href={type === "published" ? `/posts/${post.slug}` : "#"}>
             {post.title}
           </Link>
         </h3>
