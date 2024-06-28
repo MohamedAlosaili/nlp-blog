@@ -4,7 +4,7 @@ import {
   publishPostAction,
   saveDraftPostAction,
 } from "@/app/posts/create/action";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import constants from "@/constants/client";
 import {
   editDraftAction,
@@ -25,6 +25,7 @@ export const usePostForm = ({
   const [submitType, setSubmitType] = useState<SubmitButtonType>();
   const router = useRouter();
   const params = useParams<{ postId: string; type: PostType }>();
+  const pathname = usePathname();
 
   const onChange = <T extends keyof PostFormData>({
     name,
@@ -113,10 +114,13 @@ export const usePostForm = ({
         return;
       }
 
-      if (params.type !== "drafts" && !formData.isPublished) {
-        router.push(`/posts/my`);
-      } else {
+      if (
+        params.type !== "drafts" &&
+        (formData.isPublished || pathname === "/posts/create")
+      ) {
         router.push(`/posts/${postId}`);
+      } else {
+        router.push(`/posts/my`);
       }
     } catch (error) {
       setLoading(false);
