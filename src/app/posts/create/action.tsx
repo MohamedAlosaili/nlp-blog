@@ -124,6 +124,7 @@ export const publishPostAction = ({ formData }: { formData: PostFormData }) =>
     }
 
     revalidatePath("/posts/my");
+    revalidatePath(`/posts/${slug}`);
     revalidatePath(`/`);
     return { data };
   });

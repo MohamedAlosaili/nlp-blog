@@ -9,13 +9,20 @@ export interface IUser {
   id: number;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   phone?: string;
   photo?: string;
   resetPasswordToken?: string;
   isDeleted: number;
   verified: number;
+  role: "user" | "admin";
 }
+
+export interface IDashboardUser
+  extends Pick<
+    IUser,
+    "id" | "name" | "email" | "photo" | "verified" | "isDeleted"
+  > {}
 
 interface Post {
   id: number;
@@ -34,6 +41,18 @@ export interface IPost extends Post {
   isPublished: boolean;
   updatedAt: string;
 }
+
+export interface IDashboardPost
+  extends Pick<
+    IPost,
+    | "id"
+    | "title"
+    | "authorName"
+    | "summary"
+    | "coverImage"
+    | "isDeleted"
+    | "isPublished"
+  > {}
 
 export interface IDraft extends Post {
   tags: string;

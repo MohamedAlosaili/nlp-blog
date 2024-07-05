@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { logoutAction } from "@/app/action";
 
 export const Menu = () => {
   return (
@@ -31,6 +31,12 @@ export const Menu = () => {
           <Link href="/posts/create">
             <DropdownMenuItem>مقال جديد</DropdownMenuItem>
           </Link>
+          <DropdownMenuItem
+            onClick={() => logoutAction()}
+            className="hover:bg-red-50 hover:text-red-600 focus:bg-red-50 focus:text-red-600"
+          >
+            تسجيل الخروج
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -26,7 +26,7 @@ export const editPostAction = async (data: EditPostData) =>
     }
 
     revalidatePath("/posts/my");
-    revalidatePath(`/posts/${data.id}`);
+    revalidatePath(`/posts/${data.slug}`);
     revalidatePath(`/`);
     return { data: { post: data } };
   });

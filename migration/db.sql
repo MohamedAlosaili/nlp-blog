@@ -1,6 +1,11 @@
 -- Date: 2024-05-23
+DROP TABLE comments;
+DROP TABLE postTags;
+DROP TABLE Tags;
+DROP TABLE Posts;
+DROP TABLE Drafts;
+DROP TABLE Users;
 
--- DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -74,7 +79,9 @@ ALTER TABLE Drafts ADD authorName TEXT;
 ALTER TABLE Posts ADD authorName TEXT;
 
 ALTER TABLE Posts ADD slug TEXT;
-ALTER TABLE Draft ADD slug TEXT;
+ALTER TABLE Drafts ADD slug TEXT;
 -- prevent duplicate in non-nulls slugs
 CREATE UNIQUE INDEX post_slug_index ON posts(slug)
-WHERE (slug IS NOT NULL)
+WHERE (slug IS NOT NULL);
+
+ALTER TABLE Users ADD role TEXT DEFAULT 'user';

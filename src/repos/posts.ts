@@ -1,5 +1,11 @@
 import { client } from "@/lib/db";
-import { EditPostData, IPost, NewPostData, RepoReturn } from "@/types";
+import {
+  EditPostData,
+  IDashboardPost,
+  IPost,
+  NewPostData,
+  RepoReturn,
+} from "@/types";
 import * as postTagsRepo from "./postTags";
 
 export const createNewPost = async (data: NewPostData): Promise<RepoReturn> => {
@@ -111,7 +117,7 @@ export const deletePost = async ({
   postId: number;
 }): Promise<RepoReturn> => {
   const { rowsAffected } = await client.execute({
-    sql: "UPDATE posts SET isDeleted = 1, slug=null WHERE id = ?",
+    sql: "UPDATE posts SET isDeleted = 1 WHERE id = ?",
     args: [postId],
   });
 
@@ -120,6 +126,52 @@ export const deletePost = async ({
   }
 
   return {};
+};
+
+export const unDeletePost = async ({
+  postId,
+}: {
+  postId: number;
+}): Promise<RepoReturn> => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE posts SET isDeleted = 0 WHERE id = ?",
+    args: [postId],
+  });
+
+  if (rowsAffected === 0) {
+    return { errorCode: "internal_server_error" };
+  }
+
+  return {};
+};
+
+export const publishPost = async ({
+  postId,
+}: {
+  postId: number;
+}): Promise<RepoReturn> => {
+  const transaction = await client.transaction();
+  try {
+    const { rows } = await transaction.execute({
+      sql: "SELECT isPublished, updatedAt FROM Posts WHERE id = ?",
+      args: [postId],
+    });
+
+    const post = rows[0] as unknown as IPost;
+
+    if (!post.isPublished) {
+      await transaction.execute({
+        sql: "UPDATE posts SET isPublished=1, updatedAt = NULL, createdAt = CURRENT_TIMESTAMP WHERE id = ?",
+        args: [postId],
+      });
+    }
+
+    await transaction.commit();
+    return {};
+  } catch (error) {
+    await transaction.rollback();
+    return { errorCode: "internal_server_error" };
+  }
 };
 
 export const unPublishPost = async ({
@@ -319,4 +371,31 @@ export const isSlugExists = async ({
   }
 
   return isExists;
+};
+
+export const getAllPosts = async () => {
+  const { rows } = await client.execute(
+    "SELECT id, title, summary, authorName, coverImage, isPublished, isDeleted FROM posts ORDER BY createdAt DESC"
+  );
+
+  return (rows as unknown as IDashboardPost[]).map(post => ({
+    ...post,
+    id: parseInt(post.id.toString()),
+  }));
+};
+
+export const getPostRecord = async ({
+  postId,
+}: {
+  postId: number;
+}): Promise<RepoReturn<{ post: IPost }>> => {
+  const { rows } = await client.execute({
+    sql: "SELECT * FROM posts WHERE id = ?",
+    args: [postId],
+  });
+
+  const { id, ...post } = rows[0] as unknown as IPost;
+  return {
+    data: { post: { ...post, id: parseInt(id.toString()) } },
+  };
 };

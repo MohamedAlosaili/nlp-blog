@@ -2,6 +2,7 @@ import { client } from "@/lib/db";
 import {
   CreateUserData,
   GetUserData,
+  IDashboardUser,
   IUser,
   RepoReturn,
   UpdatePasswordData,
@@ -119,4 +120,88 @@ export const updatePhoto = async ({ userId, photo }: UpdatePhotoData) => {
   });
 
   return { success: rowsAffected > 0 };
+};
+
+export const getAllUsers = async ({
+  currentUserId,
+}: {
+  currentUserId: number;
+}) => {
+  const { rows } = await client.execute({
+    sql: "SELECT id, name, email, photo, verified, isDeleted FROM users WHERE id != ? ORDER BY createdAt DESC",
+    args: [currentUserId],
+  });
+
+  return (rows as unknown as IDashboardUser[]).map(user => ({
+    ...user,
+    id: parseInt(user.id.toString()),
+  }));
+};
+
+export const deleteUser = async ({
+  userId,
+}: {
+  userId: number;
+}): Promise<RepoReturn> => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE users SET isDeleted=1 WHERE id = ?",
+    args: [userId],
+  });
+
+  if (rowsAffected === 0) {
+    return { errorCode: "internal_server_error" };
+  }
+
+  return {};
+};
+
+export const unDeleteUser = async ({
+  userId,
+}: {
+  userId: number;
+}): Promise<RepoReturn> => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE users SET isDeleted=0 WHERE id = ?",
+    args: [userId],
+  });
+
+  if (rowsAffected === 0) {
+    return { errorCode: "internal_server_error" };
+  }
+
+  return {};
+};
+
+export const verifyUser = async ({
+  userId,
+}: {
+  userId: number;
+}): Promise<RepoReturn> => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE users SET verified=1 WHERE id = ?",
+    args: [userId],
+  });
+
+  if (rowsAffected === 0) {
+    return { errorCode: "internal_server_error" };
+  }
+
+  return {};
+};
+
+export const unVerifyUser = async ({
+  userId,
+}: {
+  userId: number;
+}): Promise<RepoReturn> => {
+  const { rowsAffected } = await client.execute({
+    sql: "UPDATE users SET verified=0 WHERE id = ?",
+    args: [userId],
+  });
+
+  if (rowsAffected === 0) {
+    return { errorCode: "internal_server_error" };
+  }
+
+  return {};
 };
